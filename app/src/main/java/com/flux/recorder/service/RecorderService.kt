@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
+import com.flux.recorder.R
 import com.flux.recorder.core.audio.AudioRecorder
 import com.flux.recorder.core.codec.AudioEncoder
 import com.flux.recorder.core.codec.MediaMuxerWrapper
@@ -104,8 +105,8 @@ class RecorderService : Service() {
         try {
             // Start foreground service
             val notification = notificationHelper.createRecordingNotification(
-                "Recording",
-                "Screen recording in progress..."
+                getString(R.string.notification_recording_title),
+                getString(R.string.notification_recording_message)
             )
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                 var foregroundServiceType = android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
@@ -119,7 +120,7 @@ class RecorderService : Service() {
             
             // Initialize MediaProjection
             if (!screenCaptureManager.initializeProjection(resultCode, data)) {
-                _recordingState.value = RecordingState.Error("Failed to initialize screen capture")
+                _recordingState.value = RecordingState.Error(getString(R.string.error_screen_capture))
                 stopSelf()
                 return
             }
@@ -159,7 +160,7 @@ class RecorderService : Service() {
             
             val surface = videoEncoder?.prepare()
             if (surface == null) {
-                _recordingState.value = RecordingState.Error("Failed to initialize encoder")
+                _recordingState.value = RecordingState.Error(getString(R.string.error_encoder))
                 stopSelf()
                 return
             }
@@ -173,7 +174,7 @@ class RecorderService : Service() {
             )
             
             if (virtualDisplay == null) {
-                _recordingState.value = RecordingState.Error("Failed to create virtual display")
+                _recordingState.value = RecordingState.Error(getString(R.string.error_virtual_display))
                 stopSelf()
                 return
             }
@@ -375,8 +376,8 @@ class RecorderService : Service() {
             _recordingState.value = RecordingState.Paused(currentState.durationMs)
             
             val notification = notificationHelper.createRecordingNotification(
-                "Recording Paused",
-                "Tap to resume",
+                getString(R.string.notification_paused_title),
+                getString(R.string.notification_paused_message),
                 isRecording = false
             )
             notificationHelper.updateNotification(notification)
@@ -390,8 +391,8 @@ class RecorderService : Service() {
             _recordingState.value = RecordingState.Recording(currentState.durationMs)
             
             val notification = notificationHelper.createRecordingNotification(
-                "Recording",
-                "Screen recording in progress..."
+                getString(R.string.notification_recording_title),
+                getString(R.string.notification_recording_message)
             )
             notificationHelper.updateNotification(notification)
         }

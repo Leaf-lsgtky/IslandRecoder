@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.flux.recorder.R
 import com.flux.recorder.data.RecordingSettings
 import com.flux.recorder.data.RecordingState
 import com.flux.recorder.service.RecorderService
@@ -178,11 +179,11 @@ class MainActivity : ComponentActivity() {
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "video/mp4"
                 putExtra(Intent.EXTRA_STREAM, uri)
-                putExtra(Intent.EXTRA_SUBJECT, "Screen Recording")
-                putExtra(Intent.EXTRA_TEXT, "Check out this screen recording from Flux Recorder")
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_subject))
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text))
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            startActivity(Intent.createChooser(intent, "Share Recording"))
+            startActivity(Intent.createChooser(intent, getString(R.string.share_chooser_title)))
         } catch (e: Exception) {
             e.printStackTrace()
         }

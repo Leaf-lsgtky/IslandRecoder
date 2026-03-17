@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Flux 录屏</string>
+
+    <!-- Quick Tile -->
+    <string name="quick_tile_label">屏幕录制</string>
+    <string name="tile_start_recording">开始录制</string>
+    <string name="tile_stop_recording">停止录制</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">Flux 录屏</string>
+    <string name="status_ready">准备录制</string>
+    <string name="status_recording">录制中</string>
+    <string name="status_paused">已暂停</string>
+    <string name="status_processing">处理中…</string>
+    <string name="status_error">错误</string>
+    <string name="action_pause">暂停</string>
+    <string name="action_resume">继续</string>
+    <string name="action_stop">停止</string>
+    <string name="action_record">录制</string>
+    <string name="action_stop_caps">停止</string>
+    <string name="current_settings">当前设置</string>
+    <string name="label_quality">画质</string>
+    <string name="label_frame_rate">帧率</string>
+    <string name="label_audio">音频</string>
+    <string name="label_facecam">前置摄像头</string>
+    <string name="label_enabled">已开启</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_recordings">录制列表</string>
+    <string name="cd_settings">设置</string>
+    <string name="cd_back">返回</string>
+
+    <!-- Settings -->
+    <string name="settings">设置</string>
+    <string name="video_quality">视频画质</string>
+    <string name="frame_rate">帧率</string>
+    <string name="audio_source">音频来源</string>
+    <string name="section_camera">摄像头</string>
+    <string name="enable_facecam">启用前置摄像头</string>
+    <string name="section_gestures">手势</string>
+    <string name="shake_to_stop">摇晃停止录制</string>
+    <string name="shake_sensitivity">摇晃灵敏度</string>
+
+    <!-- Quality Options -->
+    <string name="quality_360p">360p（低）</string>
+    <string name="quality_480p">480p（标清）</string>
+    <string name="quality_720p">720p（高清）</string>
+    <string name="quality_1080p">1080p（全高清）</string>
+    <string name="quality_2k">2K（1440p）</string>
+    <string name="quality_4k">4K（2160p）</string>
+
+    <!-- Frame Rate Options -->
+    <string name="fps_30">30 帧</string>
+    <string name="fps_60">60 帧</string>
+    <string name="fps_90">90 帧</string>
+
+    <!-- Audio Options -->
+    <string name="audio_none">无音频</string>
+    <string name="audio_internal">内部音频</string>
+    <string name="audio_microphone">麦克风</string>
+    <string name="audio_both">全部</string>
+
+    <!-- Recordings -->
+    <string name="recordings">录制列表</string>
+    <string name="no_recordings">暂无录制内容</string>
+    <string name="delete_recording">删除</string>
+    <string name="share_recording">分享</string>
+    <string name="play_recording">播放</string>
+    <string name="file_size_label">大小：%s</string>
+
+    <!-- Share -->
+    <string name="share_subject">屏幕录制</string>
+    <string name="share_text">这是用 Flux Recorder 录制的屏幕视频</string>
+    <string name="share_chooser_title">分享录制</string>
+
+    <!-- Permissions -->
+    <string name="permission_required">需要权限</string>
+    <string name="permission_audio">需要麦克风权限以录制音频</string>
+    <string name="permission_camera">需要相机权限以使用前置摄像头</string>
+    <string name="permission_overlay">需要悬浮窗权限以使用浮动控件</string>
+    <string name="permission_storage">需要存储权限以保存录制内容</string>
+    <string name="grant_permission">授予权限</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">录制服务</string>
+    <string name="notification_channel_desc">显示录制状态</string>
+    <string name="notification_recording_title">录制中</string>
+    <string name="notification_recording_message">正在录制屏幕…</string>
+    <string name="notification_paused_title">录制已暂停</string>
+    <string name="notification_paused_message">点击继续</string>
+    <string name="notification_processing">正在处理视频…</string>
+
+    <!-- Floating Controls -->
+    <string name="floating_pause">暂停</string>
+    <string name="floating_stop">停止</string>
+    <string name="floating_draw">画笔</string>
+
+    <!-- Errors -->
+    <string name="error_storage_full">存储空间不足</string>
+    <string name="error_recording_failed">录制失败</string>
+    <string name="error_permission_denied">权限被拒绝</string>
+    <string name="error_screen_capture">屏幕捕获初始化失败</string>
+    <string name="error_encoder">编码器初始化失败</string>
+    <string name="error_virtual_display">虚拟显示器创建失败</string>
+
+    <!-- General -->
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="close">关闭</string>
+</resources>

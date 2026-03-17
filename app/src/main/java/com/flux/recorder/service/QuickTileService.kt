@@ -7,6 +7,7 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
 import com.flux.recorder.MainActivity
+import com.flux.recorder.R
 
 /**
  * Quick Settings Tile for instant recording access
@@ -53,7 +54,7 @@ class QuickTileService : TileService() {
     private fun updateTile(isRecording: Boolean) {
         qsTile?.apply {
             state = if (isRecording) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
-            label = if (isRecording) "Stop Recording" else "Start Recording"
+            label = if (isRecording) getString(R.string.tile_stop_recording) else getString(R.string.tile_start_recording)
             updateTile()
         }
     }

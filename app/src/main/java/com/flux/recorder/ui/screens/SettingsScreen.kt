@@ -7,8 +7,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.flux.recorder.R
 import com.flux.recorder.data.AudioSource
 import com.flux.recorder.data.FrameRate
 import com.flux.recorder.data.RecordingSettings
@@ -23,20 +25,20 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
     var currentSettings by remember { mutableStateOf(settings) }
-    
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        "Settings",
+                        stringResource(R.string.settings),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -56,10 +58,10 @@ fun SettingsScreen(
         ) {
             // Video Quality
             item {
-                SettingSection("Video Quality") {
+                SettingSection(stringResource(R.string.video_quality)) {
                     VideoQuality.entries.forEach { quality ->
                         SettingRadioButton(
-                            label = quality.displayName,
+                            label = stringResource(quality.labelResId),
                             selected = currentSettings.videoQuality == quality,
                             onClick = {
                                 currentSettings = currentSettings.copy(videoQuality = quality)
@@ -69,13 +71,13 @@ fun SettingsScreen(
                     }
                 }
             }
-            
+
             // Frame Rate
             item {
-                SettingSection("Frame Rate") {
+                SettingSection(stringResource(R.string.frame_rate)) {
                     FrameRate.entries.forEach { fps ->
                         SettingRadioButton(
-                            label = fps.displayName,
+                            label = stringResource(fps.labelResId),
                             selected = currentSettings.frameRate == fps,
                             onClick = {
                                 currentSettings = currentSettings.copy(frameRate = fps)
@@ -85,13 +87,13 @@ fun SettingsScreen(
                     }
                 }
             }
-            
+
             // Audio Source
             item {
-                SettingSection("Audio Source") {
+                SettingSection(stringResource(R.string.audio_source)) {
                     AudioSource.entries.forEach { source ->
                         SettingRadioButton(
-                            label = source.displayName,
+                            label = stringResource(source.labelResId),
                             selected = currentSettings.audioSource == source,
                             onClick = {
                                 currentSettings = currentSettings.copy(audioSource = source)
@@ -101,12 +103,12 @@ fun SettingsScreen(
                     }
                 }
             }
-            
+
             // Facecam
             item {
-                SettingSection("Camera") {
+                SettingSection(stringResource(R.string.section_camera)) {
                     SettingSwitchRow(
-                        label = "Enable Facecam",
+                        label = stringResource(R.string.enable_facecam),
                         checked = currentSettings.enableFacecam,
                         onCheckedChange = {
                             currentSettings = currentSettings.copy(enableFacecam = it)
@@ -115,12 +117,12 @@ fun SettingsScreen(
                     )
                 }
             }
-            
+
             // Shake to Stop
             item {
-                SettingSection("Gestures") {
+                SettingSection(stringResource(R.string.section_gestures)) {
                     SettingSwitchRow(
-                        label = "Shake to Stop",
+                        label = stringResource(R.string.shake_to_stop),
                         checked = currentSettings.enableShakeToStop,
                         onCheckedChange = {
                             currentSettings = currentSettings.copy(enableShakeToStop = it)

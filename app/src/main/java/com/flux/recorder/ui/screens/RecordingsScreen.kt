@@ -11,8 +11,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.flux.recorder.R
 import com.flux.recorder.ui.theme.*
 import java.io.File
 
@@ -30,14 +32,14 @@ fun RecordingsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "Recordings",
+                        stringResource(R.string.recordings),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -56,7 +58,7 @@ fun RecordingsScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    "No recordings yet",
+                    stringResource(R.string.no_recordings),
                     style = MaterialTheme.typography.bodyLarge,
                     color = TextSecondary
                 )
@@ -106,15 +108,15 @@ fun RecordingCard(
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
-                "Size: ${formatFileSize(file.length())}",
+                stringResource(R.string.file_size_label, formatFileSize(file.length())),
                 style = MaterialTheme.typography.bodyMedium,
                 color = TextSecondary
             )
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -128,9 +130,9 @@ fun RecordingCard(
                 ) {
                     Icon(Icons.Default.Share, null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Share")
+                    Text(stringResource(R.string.share_recording))
                 }
-                
+
                 OutlinedButton(
                     onClick = onDelete,
                     modifier = Modifier.weight(1f),
@@ -140,7 +142,7 @@ fun RecordingCard(
                 ) {
                     Icon(Icons.Default.Delete, null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Delete")
+                    Text(stringResource(R.string.delete_recording))
                 }
             }
         }
@@ -151,7 +153,7 @@ fun formatFileSize(bytes: Long): String {
     val kb = bytes / 1024.0
     val mb = kb / 1024.0
     val gb = mb / 1024.0
-    
+
     return when {
         gb >= 1 -> String.format("%.2f GB", gb)
         mb >= 1 -> String.format("%.2f MB", mb)

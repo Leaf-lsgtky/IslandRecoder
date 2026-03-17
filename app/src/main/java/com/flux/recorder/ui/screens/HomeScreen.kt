@@ -19,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.flux.recorder.R
 import com.flux.recorder.data.RecordingSettings
 import com.flux.recorder.data.RecordingState
 import com.flux.recorder.service.RecorderService
@@ -42,21 +44,21 @@ fun HomeScreen(
     autoStartRecording: Boolean = false
 ) {
     val context = LocalContext.current
-    
+
     // Build list of required permissions based on Android version and settings
     val requiredPermissions = buildList {
         add(android.Manifest.permission.RECORD_AUDIO)
-        
+
         // Camera permission if facecam is enabled
         if (settings.enableFacecam) {
             add(android.Manifest.permission.CAMERA)
         }
-        
+
         // Notification permission for Android 13+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             add(android.Manifest.permission.POST_NOTIFICATIONS)
         }
-        
+
         // Storage permissions based on Android version
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             add(android.Manifest.permission.READ_MEDIA_VIDEO)
@@ -65,12 +67,12 @@ fun HomeScreen(
             add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
-    
+
     // Multi-permission state
     val multiplePermissionsState = rememberMultiplePermissionsState(
         permissions = requiredPermissions
     )
-    
+
     // MediaProjection permission launcher (must be declared before LaunchedEffect)
     val mediaProjectionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -79,14 +81,14 @@ fun HomeScreen(
             onStartRecording(result.resultCode, result.data!!)
         }
     }
-    
+
     // Auto-start recording if launched from Quick Tile
     LaunchedEffect(autoStartRecording) {
         if (autoStartRecording && recordingState is RecordingState.Idle) {
             // Check permissions first
             if (multiplePermissionsState.allPermissionsGranted) {
                 // Permissions granted, request MediaProjection
-                val intent = (context.getSystemService(android.content.Context.MEDIA_PROJECTION_SERVICE) 
+                val intent = (context.getSystemService(android.content.Context.MEDIA_PROJECTION_SERVICE)
                     as android.media.projection.MediaProjectionManager)
                     .createScreenCaptureIntent()
                 mediaProjectionLauncher.launch(intent)
@@ -96,23 +98,23 @@ fun HomeScreen(
             }
         }
     }
-    
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        "Flux Recorder",
+                        stringResource(R.string.home_title),
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 actions = {
                     IconButton(onClick = onNavigateToRecordings) {
-                        Icon(Icons.Default.VideoLibrary, "Recordings")
+                        Icon(Icons.Default.VideoLibrary, stringResource(R.string.cd_recordings))
                     }
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, "Settings")
+                        Icon(Icons.Default.Settings, stringResource(R.string.cd_settings))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -135,14 +137,14 @@ fun HomeScreen(
             when (recordingState) {
                 is RecordingState.Idle -> {
                     Text(
-                        "Ready to Record",
+                        stringResource(R.string.status_ready),
                         style = MaterialTheme.typography.headlineSmall,
                         color = TextSecondary
                     )
                 }
                 is RecordingState.Recording -> {
                     Text(
-                        "Recording",
+                        stringResource(R.string.status_recording),
                         style = MaterialTheme.typography.headlineSmall,
                         color = RecordingRed,
                         fontWeight = FontWeight.Bold
@@ -157,7 +159,7 @@ fun HomeScreen(
                 }
                 is RecordingState.Paused -> {
                     Text(
-                        "Paused",
+                        stringResource(R.string.status_paused),
                         style = MaterialTheme.typography.headlineSmall,
                         color = WarningYellow
                     )
@@ -170,7 +172,7 @@ fun HomeScreen(
                 }
                 is RecordingState.Processing -> {
                     Text(
-                        "Processing...",
+                        stringResource(R.string.status_processing),
                         style = MaterialTheme.typography.headlineSmall,
                         color = FluxCyan
                     )
@@ -183,7 +185,7 @@ fun HomeScreen(
                 }
                 is RecordingState.Error -> {
                     Text(
-                        "Error",
+                        stringResource(R.string.status_error),
                         style = MaterialTheme.typography.headlineSmall,
                         color = RecordingRed
                     )
@@ -195,9 +197,9 @@ fun HomeScreen(
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(48.dp))
-            
+
             // Record button
             RecordButton(
                 isRecording = recordingState is RecordingState.Recording,
@@ -206,7 +208,7 @@ fun HomeScreen(
                         // Check if all permissions are granted
                         if (multiplePermissionsState.allPermissionsGranted) {
                             // All permissions granted, request MediaProjection
-                            val intent = (context.getSystemService(android.content.Context.MEDIA_PROJECTION_SERVICE) 
+                            val intent = (context.getSystemService(android.content.Context.MEDIA_PROJECTION_SERVICE)
                                 as android.media.projection.MediaProjectionManager)
                                 .createScreenCaptureIntent()
                             mediaProjectionLauncher.launch(intent)
@@ -219,7 +221,7 @@ fun HomeScreen(
                     }
                 }
             )
-            
+
             // Pause/Resume buttons when recording
             if (recordingState is RecordingState.Recording || recordingState is RecordingState.Paused) {
                 Spacer(modifier = Modifier.height(24.dp))
@@ -240,12 +242,12 @@ fun HomeScreen(
                         )
                     ) {
                         Text(
-                            text = if (recordingState is RecordingState.Recording) "Pause" else "Resume",
+                            text = if (recordingState is RecordingState.Recording) stringResource(R.string.action_pause) else stringResource(R.string.action_resume),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    
+
                     // Stop button
                     Button(
                         onClick = onStopRecording,
@@ -254,16 +256,16 @@ fun HomeScreen(
                         )
                     ) {
                         Text(
-                            text = "Stop",
+                            text = stringResource(R.string.action_stop),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(48.dp))
-            
+
             // Settings summary
             SettingsSummaryCard(settings)
         }
@@ -285,7 +287,7 @@ fun RecordButton(
         ),
         label = "scale"
     )
-    
+
     Box(
         modifier = Modifier.size(200.dp),
         contentAlignment = Alignment.Center
@@ -303,7 +305,7 @@ fun RecordButton(
             elevation = ButtonDefaults.buttonElevation(8.dp)
         ) {
             Text(
-                if (isRecording) "STOP" else "RECORD",
+                if (isRecording) stringResource(R.string.action_stop_caps) else stringResource(R.string.action_record),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -323,18 +325,18 @@ fun SettingsSummaryCard(settings: RecordingSettings) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                "Current Settings",
+                stringResource(R.string.current_settings),
                 style = MaterialTheme.typography.titleMedium,
                 color = FluxCyan,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(12.dp))
-            
-            SettingRow("Quality", settings.videoQuality.displayName)
-            SettingRow("Frame Rate", settings.frameRate.displayName)
-            SettingRow("Audio", settings.audioSource.displayName)
+
+            SettingRow(stringResource(R.string.label_quality), stringResource(settings.videoQuality.labelResId))
+            SettingRow(stringResource(R.string.label_frame_rate), stringResource(settings.frameRate.labelResId))
+            SettingRow(stringResource(R.string.label_audio), stringResource(settings.audioSource.labelResId))
             if (settings.enableFacecam) {
-                SettingRow("Facecam", "Enabled")
+                SettingRow(stringResource(R.string.label_facecam), stringResource(R.string.label_enabled))
             }
         }
     }
@@ -367,7 +369,7 @@ fun formatDuration(ms: Long): String {
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
-    
+
     return if (hours > 0) {
         String.format("%02d:%02d:%02d", hours, minutes, seconds)
     } else {
