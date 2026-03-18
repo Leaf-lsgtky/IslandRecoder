@@ -148,13 +148,15 @@ fun HomeScreen(
                     Text(
                         stringResource(R.string.status_paused),
                         style = MiuixTheme.textStyles.title2,
-                        color = MiuixTheme.colorScheme.primary
+                        color = MiuixTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         formatDuration(recordingState.durationMs),
                         fontSize = 48.sp,
-                        color = MiuixTheme.colorScheme.onBackground
+                        color = MiuixTheme.colorScheme.onBackground,
+                        fontWeight = FontWeight.Bold
                     )
                 }
                 is RecordingState.Processing -> {

@@ -149,7 +149,6 @@ class NotificationHelper(private val context: Context) {
                     })
                 })
                 put("sameWidthDigitInfo", JSONObject().apply {
-                    put("content", contentText)
                     put("timerInfo", timerInfo)
                 })
             })
@@ -178,7 +177,6 @@ class NotificationHelper(private val context: Context) {
             put("islandFirstFloat", false)
             put("param_island", paramIsland)
             put("animTextInfo", JSONObject().apply {
-                put("content", contentText)
                 put("timerInfo", timerInfo)
                 put("animIconInfo", JSONObject().apply {
                     put("type", 1)
