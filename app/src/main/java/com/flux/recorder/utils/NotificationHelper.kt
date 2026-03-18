@@ -65,8 +65,6 @@ class NotificationHelper(private val context: Context) {
             .setOnlyAlertOnce(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
-            .setColor(0xFF000000.toInt())
-            .setColorized(true)
 
         // Pause / Resume action
         if (isPaused) {
