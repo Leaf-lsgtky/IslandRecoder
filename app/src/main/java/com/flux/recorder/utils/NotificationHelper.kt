@@ -1,15 +1,19 @@
 package com.flux.recorder.utils
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import com.flux.recorder.MainActivity
 import com.flux.recorder.R
 import com.flux.recorder.service.RecorderService
+import org.json.JSONArray
+import org.json.JSONObject
 
 class NotificationHelper(private val context: Context) {
 
@@ -41,7 +45,7 @@ class NotificationHelper(private val context: Context) {
     fun createRecordingNotification(
         durationMs: Long,
         isPaused: Boolean = false
-    ): android.app.Notification {
+    ): Notification {
         val contentIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -67,6 +71,7 @@ class NotificationHelper(private val context: Context) {
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
 
         // Pause / Resume action
+        val pauseResumeAction: Notification.Action
         if (isPaused) {
             val resumeIntent = Intent(context, RecorderService::class.java).apply {
                 action = RecorderService.ACTION_RESUME_RECORDING
@@ -76,6 +81,9 @@ class NotificationHelper(private val context: Context) {
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
             builder.addAction(R.drawable.ic_resume, context.getString(R.string.action_resume), resumePending)
+            pauseResumeAction = Notification.Action.Builder(
+                null, context.getString(R.string.action_resume), resumePending
+            ).build()
         } else {
             val pauseIntent = Intent(context, RecorderService::class.java).apply {
                 action = RecorderService.ACTION_PAUSE_RECORDING
@@ -85,6 +93,9 @@ class NotificationHelper(private val context: Context) {
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
             builder.addAction(R.drawable.ic_pause, context.getString(R.string.action_pause), pausePending)
+            pauseResumeAction = Notification.Action.Builder(
+                null, context.getString(R.string.action_pause), pausePending
+            ).build()
         }
 
         // Stop action
@@ -96,11 +107,127 @@ class NotificationHelper(private val context: Context) {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         builder.addAction(R.drawable.ic_stop, context.getString(R.string.action_stop), stopPending)
+        val stopAction = Notification.Action.Builder(
+            null, context.getString(R.string.action_stop), stopPending
+        ).build()
 
-        return builder.build()
+        val notification = builder.build()
+
+        // Add HyperOS Focus Island (超级岛) params
+        addFocusIslandParams(notification, durationMs, isPaused, pauseResumeAction, stopAction)
+
+        return notification
     }
 
-    fun updateNotification(notification: android.app.Notification) {
+    private fun addFocusIslandParams(
+        notification: Notification,
+        durationMs: Long,
+        isPaused: Boolean,
+        pauseResumeAction: Notification.Action,
+        stopAction: Notification.Action
+    ) {
+        val now = System.currentTimeMillis()
+        // Effective start time: system counts up from this point
+        val timerWhen = now - durationMs
+        val timerType = if (isPaused) 2 else 1 // 1=counting up, 2=counting up paused
+
+        val timerInfo = JSONObject().apply {
+            put("timerWhen", timerWhen)
+            put("timerType", timerType)
+            put("timerSystemCurrent", now)
+        }
+
+        val paramIsland = JSONObject().apply {
+            put("islandPriority", 1)
+            put("islandTimeout", 43200)
+            put("islandProperty", 2)
+            put("bigIslandArea", JSONObject().apply {
+                put("imageTextInfoLeft", JSONObject().apply {
+                    put("type", 1)
+                    put("picInfo", JSONObject().apply {
+                        put("type", 2)
+                        put("pic", "voiceWaveSmall")
+                        put("loop", !isPaused)
+                        put("autoplay", !isPaused)
+                    })
+                })
+                put("sameWidthDigitInfo", JSONObject().apply {
+                    put("timerInfo", timerInfo)
+                })
+            })
+            put("smallIslandArea", JSONObject().apply {
+                put("picInfo", JSONObject().apply {
+                    put("type", 2)
+                    put("pic", "voiceWaveSmall")
+                    put("loop", !isPaused)
+                    put("autoplay", !isPaused)
+                })
+            })
+        }
+
+        val contentText = if (isPaused) {
+            context.getString(R.string.notification_paused_message)
+        } else {
+            context.getString(R.string.notification_recording_message)
+        }
+
+        val paramV2 = JSONObject().apply {
+            put("protocol", 1)
+            put("updatable", true)
+            put("enableFloat", false)
+            put("business", "screen_recording")
+            put("scene", "recorder")
+            put("content", contentText)
+            put("notifyId", "${context.packageName}$NOTIFICATION_ID")
+            put("islandFirstFloat", false)
+            put("param_island", paramIsland)
+            put("animTextInfo", JSONObject().apply {
+                put("timerInfo", timerInfo)
+                put("animIconInfo", JSONObject().apply {
+                    put("type", 1)
+                    put("src", "voiceWaveBig")
+                    put("number", 0)
+                    put("loop", !isPaused)
+                    put("autoplay", !isPaused)
+                })
+            })
+            put("actions", JSONArray().apply {
+                put(JSONObject().apply {
+                    put("actionIntentType", 0)
+                    put("action", "miui.focus.action_1")
+                    put("type", 0)
+                })
+                put(JSONObject().apply {
+                    put("actionIntentType", 0)
+                    put("action", "miui.focus.action_2")
+                    put("type", 0)
+                })
+            })
+        }
+
+        val focusParam = JSONObject().apply {
+            put("protocol", 1)
+            put("timerWhen", timerWhen)
+            put("timerType", timerType)
+            put("timerSystemCurrent", now)
+            put("updatable", true)
+            put("enableFloat", false)
+            put("content", contentText)
+            put("scene", "recorder")
+            put("param_v2", paramV2)
+        }
+
+        // Actions bundle: map action keys to Notification.Action objects
+        val actionsBundle = Bundle().apply {
+            putParcelable("miui.focus.action_1", pauseResumeAction)
+            putParcelable("miui.focus.action_2", stopAction)
+        }
+
+        notification.extras.putString("miui.focus.param", focusParam.toString())
+        notification.extras.putBundle("miui.focus.actions", actionsBundle)
+    }
+
+    fun updateNotification(notification: Notification) {
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
