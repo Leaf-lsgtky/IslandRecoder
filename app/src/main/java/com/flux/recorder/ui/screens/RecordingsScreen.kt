@@ -38,7 +38,10 @@ fun RecordingsScreen(
                 largeTitle = stringResource(R.string.recordings),
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.padding(start = 16.dp)
+                    ) {
                         Icon(MiuixIcons.Back, contentDescription = stringResource(R.string.cd_back))
                     }
                 }

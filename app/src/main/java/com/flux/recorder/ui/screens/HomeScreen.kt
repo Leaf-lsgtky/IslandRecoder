@@ -94,7 +94,10 @@ fun HomeScreen(
                     IconButton(onClick = onNavigateToRecordings) {
                         Icon(MiuixIcons.Recording, contentDescription = stringResource(R.string.cd_recordings))
                     }
-                    IconButton(onClick = onNavigateToSettings) {
+                    IconButton(
+                        onClick = onNavigateToSettings,
+                        modifier = Modifier.padding(end = 16.dp)
+                    ) {
                         Icon(MiuixIcons.Settings, contentDescription = stringResource(R.string.cd_settings))
                     }
                 }
