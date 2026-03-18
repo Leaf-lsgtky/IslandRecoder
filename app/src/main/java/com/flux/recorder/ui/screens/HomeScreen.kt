@@ -1,5 +1,7 @@
 package com.flux.recorder.ui.screens
 
+import android.util.DisplayMetrics
+import android.view.WindowManager
 import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -286,6 +288,20 @@ fun RecordButton(
 
 @Composable
 fun SettingsSummaryCard(settings: RecordingSettings) {
+    val context = LocalContext.current
+    val (screenW, screenH) = remember {
+        val wm = context.getSystemService(android.content.Context.WINDOW_SERVICE) as WindowManager
+        val metrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        wm.defaultDisplay.getRealMetrics(metrics)
+        Pair(metrics.widthPixels, metrics.heightPixels)
+    }
+    val (qw, qh) = settings.videoQuality.computeDimensions(screenW, screenH)
+    val qualityLabel = stringResource(
+        R.string.quality_label_format,
+        stringResource(settings.videoQuality.tierLabelResId), qw, qh
+    )
+
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -301,7 +317,7 @@ fun SettingsSummaryCard(settings: RecordingSettings) {
 
             BasicComponent(
                 title = stringResource(R.string.label_quality),
-                summary = stringResource(settings.videoQuality.labelResId)
+                summary = qualityLabel
             )
             BasicComponent(
                 title = stringResource(R.string.label_frame_rate),

@@ -5,8 +5,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import android.util.DisplayMetrics
+import android.view.WindowManager
 import com.flux.recorder.R
 import com.flux.recorder.data.AudioSource
 import com.flux.recorder.data.FrameRate
@@ -27,6 +30,16 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
     var currentSettings by remember { mutableStateOf(settings) }
+
+    // Get device screen dimensions for quality labels
+    val context = LocalContext.current
+    val (screenW, screenH) = remember {
+        val wm = context.getSystemService(android.content.Context.WINDOW_SERVICE) as WindowManager
+        val metrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        wm.defaultDisplay.getRealMetrics(metrics)
+        Pair(metrics.widthPixels, metrics.heightPixels)
+    }
 
     Scaffold(
         topBar = {
@@ -53,7 +66,10 @@ fun SettingsScreen(
             Card(
                 modifier = Modifier.padding(horizontal = 12.dp)
             ) {
-                val qualityItems = VideoQuality.entries.map { stringResource(it.labelResId) }
+                val qualityItems = VideoQuality.entries.map { quality ->
+                    val (w, h) = quality.computeDimensions(screenW, screenH)
+                    stringResource(R.string.quality_label_format, stringResource(quality.tierLabelResId), w, h)
+                }
                 SuperDropdown(
                     title = stringResource(R.string.video_quality),
                     items = qualityItems,

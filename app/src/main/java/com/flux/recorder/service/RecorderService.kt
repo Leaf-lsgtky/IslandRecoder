@@ -128,29 +128,12 @@ class RecorderService : Service() {
             // Create output file
             outputFile = fileManager.createRecordingFile()
             
-            // Calculate dimensions based on orientation
-            var width = settings.videoQuality.width
-            var height = settings.videoQuality.height
-            
+            // Calculate dimensions based on device screen and quality tier
             val (screenWidth, screenHeight) = screenCaptureManager.getScreenDimensions()
-            val isScreenPortrait = screenHeight > screenWidth
-            val isSettingPortrait = height > width
-            
-            // Swap if orientations don't match
-            if (isScreenPortrait && !isSettingPortrait) {
-                // Phone is in Portrait, but settings are Landscape -> Swap to Portrait
-                val temp = width
-                width = height
-                height = temp
-            } else if (!isScreenPortrait && isSettingPortrait) {
-                // Phone is in Landscape, but settings are Portrait -> Swap to Landscape
-                val temp = width
-                width = height
-                height = temp
-            }
-            
+            val (width, height) = settings.videoQuality.computeDimensions(screenWidth, screenHeight)
+
             // Initialize encoder
-            val bitrate = settings.calculateBitrate()
+            val bitrate = settings.calculateBitrate(width, height)
             videoEncoder = VideoEncoder(
                 width,
                 height,
