@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
@@ -82,7 +83,9 @@ class NotificationHelper(private val context: Context) {
             )
             builder.addAction(R.drawable.ic_resume, context.getString(R.string.action_resume), resumePending)
             pauseResumeAction = Notification.Action.Builder(
-                null, context.getString(R.string.action_resume), resumePending
+                Icon.createWithResource(context, R.drawable.ic_focus_resume),
+                context.getString(R.string.action_resume),
+                resumePending
             ).build()
         } else {
             val pauseIntent = Intent(context, RecorderService::class.java).apply {
@@ -94,7 +97,9 @@ class NotificationHelper(private val context: Context) {
             )
             builder.addAction(R.drawable.ic_pause, context.getString(R.string.action_pause), pausePending)
             pauseResumeAction = Notification.Action.Builder(
-                null, context.getString(R.string.action_pause), pausePending
+                Icon.createWithResource(context, R.drawable.ic_focus_pause),
+                context.getString(R.string.action_pause),
+                pausePending
             ).build()
         }
 
@@ -108,7 +113,9 @@ class NotificationHelper(private val context: Context) {
         )
         builder.addAction(R.drawable.ic_stop, context.getString(R.string.action_stop), stopPending)
         val stopAction = Notification.Action.Builder(
-            null, context.getString(R.string.action_stop), stopPending
+            Icon.createWithResource(context, R.drawable.ic_focus_stop),
+            context.getString(R.string.action_stop),
+            stopPending
         ).build()
 
         val notification = builder.build()
@@ -127,9 +134,8 @@ class NotificationHelper(private val context: Context) {
         stopAction: Notification.Action
     ) {
         val now = System.currentTimeMillis()
-        // Effective start time: system counts up from this point
         val timerWhen = now - durationMs
-        val timerType = if (isPaused) 2 else 1 // 1=counting up, 2=counting up paused
+        val timerType = if (isPaused) 2 else 1
 
         val timerInfo = JSONObject().apply {
             put("timerWhen", timerWhen)
@@ -217,7 +223,7 @@ class NotificationHelper(private val context: Context) {
             put("param_v2", paramV2)
         }
 
-        // Actions bundle: map action keys to Notification.Action objects
+        // Actions bundle with Notification.Action objects (include icons)
         val actionsBundle = Bundle().apply {
             putParcelable("miui.focus.action_1", pauseResumeAction)
             putParcelable("miui.focus.action_2", stopAction)
