@@ -251,6 +251,12 @@ class RecorderService : Service() {
             if (state !is RecordingState.Recording && state !is RecordingState.Paused) break
 
             if (state is RecordingState.Paused) {
+                // Drain encoder output and discard (don't write to muxer)
+                val drainOutput = videoEncoder?.getEncodedData()
+                if (drainOutput is VideoEncoder.EncoderOutput.Data) {
+                    videoEncoder?.releaseOutputBuffer(drainOutput.bufferIndex)
+                }
+
                 // Update notification periodically to keep Focus Island in sync
                 val now = System.currentTimeMillis()
                 if (now - lastPauseNotificationUpdate >= 1000) {
@@ -260,7 +266,7 @@ class RecorderService : Service() {
                     )
                     notificationHelper.updateNotification(notification)
                 }
-                delay(100)
+                delay(10)
                 continue
             }
 
@@ -395,6 +401,7 @@ class RecorderService : Service() {
         if (currentState is RecordingState.Recording) {
             pauseStartTime = System.currentTimeMillis()
             screenCaptureManager.pause()
+            muxer?.onPause()
             _recordingState.value = RecordingState.Paused(currentState.durationMs)
 
             val notification = notificationHelper.createRecordingNotification(
@@ -408,6 +415,7 @@ class RecorderService : Service() {
         val currentState = _recordingState.value
         if (currentState is RecordingState.Paused) {
             pausedDuration += System.currentTimeMillis() - pauseStartTime
+            muxer?.onResume()
             val surface = videoEncoder?.inputSurface
             if (surface != null) {
                 screenCaptureManager.resume(surface)

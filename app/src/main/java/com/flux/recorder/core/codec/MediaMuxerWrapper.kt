@@ -69,6 +69,25 @@ class MediaMuxerWrapper(private val outputFile: File) {
     }
     
     private var expectAudio = false
+    private var timestampOffsetUs = 0L
+    private var pauseStartUs = 0L
+
+    /**
+     * Mark the start of a pause — samples between pause and resume will be dropped
+     */
+    fun onPause() {
+        pauseStartUs = System.nanoTime() / 1000
+    }
+
+    /**
+     * Mark the end of a pause — accumulate the gap into the timestamp offset
+     */
+    fun onResume() {
+        if (pauseStartUs > 0) {
+            timestampOffsetUs += (System.nanoTime() / 1000) - pauseStartUs
+            pauseStartUs = 0
+        }
+    }
 
     /**
      * Set if audio track is expected
@@ -104,7 +123,10 @@ class MediaMuxerWrapper(private val outputFile: File) {
         }
         
         try {
-            mediaMuxer?.writeSampleData(videoTrackIndex, buffer, bufferInfo)
+            val adjusted = MediaCodec.BufferInfo()
+            adjusted.set(bufferInfo.offset, bufferInfo.size,
+                bufferInfo.presentationTimeUs - timestampOffsetUs, bufferInfo.flags)
+            mediaMuxer?.writeSampleData(videoTrackIndex, buffer, adjusted)
         } catch (e: Exception) {
             Log.e(TAG, "Error writing video sample", e)
         }
@@ -125,7 +147,10 @@ class MediaMuxerWrapper(private val outputFile: File) {
         }
         
         try {
-            mediaMuxer?.writeSampleData(audioTrackIndex, buffer, bufferInfo)
+            val adjusted = MediaCodec.BufferInfo()
+            adjusted.set(bufferInfo.offset, bufferInfo.size,
+                bufferInfo.presentationTimeUs - timestampOffsetUs, bufferInfo.flags)
+            mediaMuxer?.writeSampleData(audioTrackIndex, buffer, adjusted)
         } catch (e: Exception) {
             Log.e(TAG, "Error writing audio sample", e)
         }
