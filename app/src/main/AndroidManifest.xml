@@ -45,7 +45,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
+        <!-- Transparent activity for Quick Tile recording shortcut -->
+        <activity
+            android:name="com.flux.recorder.RecordingShortcutActivity"
+            android:exported="false"
+            android:theme="@style/Theme.FluxRecorder.Transparent"
+            android:excludeFromRecents="true"
+            android:noHistory="true" />
+
         <!-- Recording Service -->
         <service
             android:name="com.flux.recorder.service.RecorderService"
