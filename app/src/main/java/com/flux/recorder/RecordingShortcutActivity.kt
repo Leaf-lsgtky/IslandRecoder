@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.flux.recorder.data.AudioSource
@@ -95,7 +97,7 @@ class RecordingShortcutActivity : ComponentActivity() {
                 var systemAudio by remember { mutableStateOf(prefs.getBoolean(KEY_SYSTEM_AUDIO, true)) }
                 var microphone by remember { mutableStateOf(prefs.getBoolean(KEY_MICROPHONE, false)) }
 
-                Scaffold { _->
+                Scaffold(containerColor = Color.Transparent) { _ ->
                     SuperDialog(
                     title = getString(R.string.dialog_record_title),
                     summary = getString(R.string.dialog_record_summary),
@@ -110,7 +112,10 @@ class RecordingShortcutActivity : ComponentActivity() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
                                 systemAudio = !systemAudio
                                 prefs.edit().putBoolean(KEY_SYSTEM_AUDIO, systemAudio).apply()
                             }
@@ -133,7 +138,10 @@ class RecordingShortcutActivity : ComponentActivity() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
                                 microphone = !microphone
                                 prefs.edit().putBoolean(KEY_MICROPHONE, microphone).apply()
                             }
