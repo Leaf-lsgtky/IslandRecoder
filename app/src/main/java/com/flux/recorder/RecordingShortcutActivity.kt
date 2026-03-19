@@ -26,6 +26,7 @@ import com.flux.recorder.ui.theme.FluxRecorderTheme
 import com.flux.recorder.utils.PreferencesManager
 import top.yukonga.miuix.kmp.basic.ButtonDefaults
 import top.yukonga.miuix.kmp.basic.Card
+import top.yukonga.miuix.kmp.basic.Scaffold
 import top.yukonga.miuix.kmp.basic.TextButton
 import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperSwitch
@@ -88,7 +89,8 @@ class RecordingShortcutActivity : ComponentActivity() {
                 var systemAudio by remember { mutableStateOf(prefs.getBoolean(KEY_SYSTEM_AUDIO, true)) }
                 var microphone by remember { mutableStateOf(prefs.getBoolean(KEY_MICROPHONE, false)) }
 
-                SuperDialog(
+                Scaffold { _->
+                    SuperDialog(
                     title = getString(R.string.dialog_record_title),
                     summary = getString(R.string.dialog_record_summary),
                     show = showDialog,
@@ -137,6 +139,7 @@ class RecordingShortcutActivity : ComponentActivity() {
                             colors = ButtonDefaults.textButtonColorsPrimary()
                         )
                     }
+                }
                 }
             }
         }
