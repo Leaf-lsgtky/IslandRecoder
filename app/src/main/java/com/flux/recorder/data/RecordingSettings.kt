@@ -65,7 +65,8 @@ enum class FrameRate(val fps: Int, @StringRes val labelResId: Int) {
     FPS_30(30, R.string.fps_30),
     FPS_48(48, R.string.fps_48),
     FPS_60(60, R.string.fps_60),
-    FPS_90(90, R.string.fps_90)
+    FPS_90(90, R.string.fps_90),
+    FPS_120(120, R.string.fps_120)
 }
 
 /**

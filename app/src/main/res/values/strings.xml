@@ -76,6 +76,7 @@
     <string name="fps_48">48 FPS</string>
     <string name="fps_60">60 FPS</string>
     <string name="fps_90">90 FPS</string>
+    <string name="fps_120">120 FPS</string>
 
     <!-- Audio Options -->
     <string name="audio_none">No Audio</string>

@@ -77,6 +77,7 @@
     <string name="fps_48">48 帧</string>
     <string name="fps_60">60 帧</string>
     <string name="fps_90">90 帧</string>
+    <string name="fps_120">120 帧</string>
 
     <!-- Audio Options -->
     <string name="audio_none">无声音</string>
