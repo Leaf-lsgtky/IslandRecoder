@@ -102,10 +102,11 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .overScrollVertical()
                     .verticalScroll(rememberScrollState())
                     .defaultMinSize(minHeight = viewportHeight)
-                    .padding(24.dp),
+                    .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
