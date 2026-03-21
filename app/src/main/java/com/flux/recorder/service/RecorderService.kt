@@ -3,6 +3,7 @@ package com.flux.recorder.service
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import com.flux.recorder.R
@@ -472,16 +473,20 @@ class RecorderService : Service() {
 
             // Make sure file is visible in gallery
             currentOutputFile?.let { file ->
-                android.media.MediaScannerConnection.scanFile(
-                    this@RecorderService,
-                    arrayOf(file.absolutePath),
-                    arrayOf("video/mp4"),
-                    null
-                )
+                // Android 10+ uses MediaStore, no need to scan private file
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    android.media.MediaScannerConnection.scanFile(
+                        this@RecorderService,
+                        arrayOf(file.absolutePath),
+                        arrayOf("video/mp4"),
+                        null
+                    )
+                }
 
                 val publicFile = fileManager.copyToPublicGallery(file)
 
                 if (publicFile != null) {
+                    // Android 9 and below - copy to public directory
                     android.media.MediaScannerConnection.scanFile(
                         this@RecorderService,
                         arrayOf(publicFile.absolutePath),
@@ -490,7 +495,8 @@ class RecorderService : Service() {
                     )
                     Log.d(TAG, "Copied and scanned public file: ${publicFile.absolutePath}")
                 } else {
-                    Log.d(TAG, "Copied to MediaStore (Scoped Storage)")
+                    // Android 10+ - already saved via MediaStore
+                    Log.d(TAG, "Saved to MediaStore (DCIM folder)")
                 }
 
                 try {
