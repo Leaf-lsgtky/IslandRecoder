@@ -180,6 +180,7 @@ class NotificationHelper(private val context: Context) {
                 put("animIconInfo", JSONObject().apply {
                     put("type", 1)
                     put("src", "miui.focus.pic_ticker")
+                    put("srcDark", "miui.focus.pic_ticker")
                     put("number", 0)
                     put("loop", false)
                     put("autoplay", false)
