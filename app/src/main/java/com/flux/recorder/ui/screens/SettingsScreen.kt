@@ -18,7 +18,11 @@ import com.flux.recorder.data.RecordingSettings
 import com.flux.recorder.data.ScreenOrientation
 import com.flux.recorder.data.VideoBitrate
 import com.flux.recorder.data.VideoQuality
+import com.flux.recorder.utils.FileManager
+import com.flux.recorder.utils.PreferencesManager
 import top.yukonga.miuix.kmp.basic.*
+import top.yukonga.miuix.kmp.extra.SuperArrow
+import top.yukonga.miuix.kmp.extra.SuperDialog
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Back
@@ -33,6 +37,10 @@ fun SettingsScreen(
     var currentSettings by remember { mutableStateOf(settings) }
 
     val context = LocalContext.current
+    val prefsManager = remember { PreferencesManager(context) }
+    var storagePath by remember { mutableStateOf(prefsManager.getStoragePath()) }
+    val showPathDialog = remember { mutableStateOf(false) }
+    var editingPath by remember { mutableStateOf(storagePath) }
     val (screenW, screenH) = remember {
         val wm = context.getSystemService(android.content.Context.WINDOW_SERVICE) as WindowManager
         val metrics = DisplayMetrics()
@@ -140,6 +148,50 @@ fun SettingsScreen(
                         onSettingsChanged(currentSettings)
                     }
                 )
+            }
+
+            SmallTitle(text = stringResource(R.string.section_storage))
+            Card(
+                modifier = Modifier.padding(horizontal = 12.dp)
+            ) {
+                SuperArrow(
+                    title = stringResource(R.string.storage_path),
+                    summary = storagePath,
+                    onClick = {
+                        editingPath = storagePath
+                        showPathDialog.value = true
+                    }
+                )
+            }
+
+            SuperDialog(
+                title = stringResource(R.string.storage_path),
+                show = showPathDialog,
+                onDismissRequest = { showPathDialog.value = false }
+            ) {
+                TextField(
+                    value = editingPath,
+                    onValueChange = { editingPath = it },
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                )
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(
+                        text = stringResource(R.string.cancel),
+                        onClick = { showPathDialog.value = false },
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    TextButton(
+                        text = stringResource(R.string.ok),
+                        onClick = {
+                            storagePath = editingPath
+                            prefsManager.setStoragePath(editingPath)
+                            showPathDialog.value = false
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.textButtonColorsPrimary()
+                    )
+                }
             }
         }
     }

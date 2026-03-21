@@ -44,6 +44,8 @@
     <string name="audio_source_summary">是否录制系统内部声音或麦克风声音</string>
     <string name="frame_rate">帧数</string>
     <string name="frame_rate_summary">每秒钟录制的帧数，越高画越流畅</string>
+    <string name="section_storage">存储</string>
+    <string name="storage_path">存储路径</string>
 
     <!-- Quality Options -->
     <string name="quality_native">原生</string>

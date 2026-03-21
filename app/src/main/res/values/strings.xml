@@ -43,6 +43,8 @@
     <string name="audio_source_summary">Whether to record internal audio or microphone</string>
     <string name="frame_rate">Frame Rate</string>
     <string name="frame_rate_summary">Frames per second. Higher means smoother video</string>
+    <string name="section_storage">Storage</string>
+    <string name="storage_path">Storage Path</string>
 
     <!-- Quality Options -->
     <string name="quality_native">Native</string>

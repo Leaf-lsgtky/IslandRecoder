@@ -24,6 +24,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_SCREEN_ORIENTATION = "screen_orientation"
         private const val KEY_FRAME_RATE = "frame_rate"
         private const val KEY_AUDIO_SOURCE = "audio_source"
+        private const val KEY_STORAGE_PATH = "storage_path"
 
         private const val KEY_FIRST_LAUNCH = "first_launch"
     }
@@ -82,6 +83,15 @@ class PreferencesManager(context: Context) {
             putString(KEY_AUDIO_SOURCE, settings.audioSource.name)
             apply()
         }
+    }
+
+    fun getStoragePath(): String {
+        return prefs.getString(KEY_STORAGE_PATH, FileManager.DEFAULT_STORAGE_PATH)
+            ?: FileManager.DEFAULT_STORAGE_PATH
+    }
+
+    fun setStoragePath(path: String) {
+        prefs.edit().putString(KEY_STORAGE_PATH, path).apply()
     }
 
     fun isFirstLaunch(): Boolean {
