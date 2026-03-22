@@ -93,10 +93,10 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .overScrollVertical()
                 .verticalScroll(rememberScrollState())
+                .padding(padding)
                 .padding(vertical = 12.dp)
         ) {
             SmallTitle(text = stringResource(R.string.section_recording))

@@ -97,7 +97,6 @@ fun HomeScreen(
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
         ) {
             val viewportHeight = maxHeight
             Column(
@@ -107,7 +106,8 @@ fun HomeScreen(
                     .overScrollVertical()
                     .verticalScroll(rememberScrollState())
                     .defaultMinSize(minHeight = viewportHeight)
-                    .padding(horizontal = 24.dp),
+                    .padding(padding) // Move padding here so column content respects insets
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

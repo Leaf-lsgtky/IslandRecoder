@@ -51,12 +51,12 @@ fun RecordingsScreen(
         if (recordings.isEmpty()) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     stringResource(R.string.no_recordings),
+                    modifier = Modifier.padding(padding),
                     style = MiuixTheme.textStyles.body1,
                     color = MiuixTheme.colorScheme.onBackgroundVariant
                 )
@@ -65,11 +65,15 @@ fun RecordingsScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(padding)
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .overScrollVertical(),
                 overscrollEffect = null,
-                contentPadding = PaddingValues(12.dp),
+                contentPadding = PaddingValues(
+                    top = padding.calculateTopPadding() + 12.dp,
+                    bottom = padding.calculateBottomPadding() + 12.dp,
+                    start = 12.dp,
+                    end = 12.dp
+                ),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(recordings) { recording ->
