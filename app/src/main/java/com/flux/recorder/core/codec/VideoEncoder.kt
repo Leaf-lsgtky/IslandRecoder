@@ -53,7 +53,7 @@ class VideoEncoder(
     ) {
         companion object {
             val SDR = HdrConfig(COLOR_STANDARD_BT709, COLOR_TRANSFER_SDR, COLOR_RANGE_LIMITED)
-            val HDR_HLG = HdrConfig(COLOR_STANDARD_BT2020, COLOR_TRANSFER_HLG, COLOR_RANGE_FULL)
+            val HDR_HLG = HdrConfig(COLOR_STANDARD_BT709, COLOR_TRANSFER_HLG, COLOR_RANGE_FULL)
             val HDR_PQ = HdrConfig(COLOR_STANDARD_BT2020, COLOR_TRANSFER_PQ, COLOR_RANGE_FULL)
         }
     }
