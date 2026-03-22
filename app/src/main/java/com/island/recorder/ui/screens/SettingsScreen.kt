@@ -223,6 +223,14 @@ fun SettingsScreen(
                         context.startActivity(intent)
                     }
                 )
+                SuperArrow(
+                    title = stringResource(R.string.original_project),
+                    summary = stringResource(R.string.original_project_value),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Icradle-Innovations-Ltd/FluxRecorder"))
+                        context.startActivity(intent)
+                    }
+                )
             }
         }
     }

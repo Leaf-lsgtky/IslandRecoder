@@ -138,4 +138,6 @@
     <string name="section_about">关于</string>
     <string name="project_url">项目地址</string>
     <string name="project_url_value">https://github.com/Leaf-lsgtky/IslandRecoder</string>
+    <string name="original_project">原项目地址</string>
+    <string name="original_project_value">https://github.com/Icradle-Innovations-Ltd/FluxRecorder</string>
 </resources>
