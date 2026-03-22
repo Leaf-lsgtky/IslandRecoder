@@ -18,7 +18,8 @@ class VideoEncoder(
     private val height: Int,
     private val bitrate: Int,
     private val frameRate: Int,
-    private val mimeType: String = MediaFormat.MIMETYPE_VIDEO_AVC
+    private val mimeType: String = MediaFormat.MIMETYPE_VIDEO_AVC,
+    private val isHdrEnabled: Boolean = false
 ) {
     private var mediaCodec: MediaCodec? = null
     var inputSurface: Surface? = null
@@ -69,9 +70,9 @@ class VideoEncoder(
                 setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
                 setLong(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, 1000000L / frameRate)
 
-                // H.265/HEVC: Use Main10 profile for 10-bit support
+                // H.265/HEVC: Use Main10 profile for 10-bit support if HDR is enabled
                 if (mimeType == MediaFormat.MIMETYPE_VIDEO_HEVC) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (isHdrEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain10)
                         
                         // For Global HDR, we use HLG but with FULL range to match the screen's output.
@@ -79,9 +80,13 @@ class VideoEncoder(
                         isHdrActive = true
                         
                         Log.d(TAG, "Global HDR mode: HEVC Main10 + BT.2020 + HLG + FULL RANGE")
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain)
+                        applyHdrConfig(HdrConfig.SDR)
+                        Log.d(TAG, "HEVC Main profile enabled (8-bit)")
                     } else {
                         setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain)
-                        Log.d(TAG, "HEVC Main profile enabled (8-bit)")
+                        Log.d(TAG, "HEVC Main profile enabled (8-bit, API < 29)")
                     }
                 }
             }

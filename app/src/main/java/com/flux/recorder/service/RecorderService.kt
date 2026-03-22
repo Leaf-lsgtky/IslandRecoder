@@ -171,7 +171,8 @@ class RecorderService : Service() {
                     height,
                     bitrate,
                     settings.frameRate.fps,
-                    mimeType = settings.videoCodec.mimeType
+                    mimeType = settings.videoCodec.mimeType,
+                    isHdrEnabled = settings.videoCodec.isHdrEnabled
                 )
 
                 val surface = videoEncoder?.prepare()

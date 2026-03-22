@@ -84,7 +84,8 @@
 
     <!-- Codec Options -->
     <string name="codec_h264">H.264 (AVC)</string>
-    <string name="codec_h265">H.265 (HEVC + HDR)</string>
+    <string name="codec_h265">H.265 (HEVC)</string>
+    <string name="codec_h265_hdr">H.265 (HEVC + HDR)</string>
 
     <!-- Audio Options -->
     <string name="audio_none">No Audio</string>
