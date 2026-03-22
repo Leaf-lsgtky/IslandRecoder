@@ -63,10 +63,10 @@ class RecorderService : Service() {
 
     companion object {
         private const val TAG = "RecorderService"
-        const val ACTION_START_RECORDING = "com.flux.recorder.START_RECORDING"
-        const val ACTION_STOP_RECORDING = "com.flux.recorder.STOP_RECORDING"
-        const val ACTION_PAUSE_RECORDING = "com.flux.recorder.PAUSE_RECORDING"
-        const val ACTION_RESUME_RECORDING = "com.flux.recorder.RESUME_RECORDING"
+        const val ACTION_START_RECORDING = "com.island.recorder.START_RECORDING"
+        const val ACTION_STOP_RECORDING = "com.island.recorder.STOP_RECORDING"
+        const val ACTION_PAUSE_RECORDING = "com.island.recorder.PAUSE_RECORDING"
+        const val ACTION_RESUME_RECORDING = "com.island.recorder.RESUME_RECORDING"
 
         const val EXTRA_RESULT_CODE = "result_code"
         const val EXTRA_RESULT_DATA = "result_data"

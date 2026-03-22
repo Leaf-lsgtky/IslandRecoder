@@ -1,4 +1,4 @@
-package com.icradleinnovations.myapplication
+package com.island.recorder.ui
 
 import org.junit.Test
 

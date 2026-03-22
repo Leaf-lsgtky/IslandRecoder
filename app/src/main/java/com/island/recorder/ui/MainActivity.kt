@@ -1,4 +1,4 @@
-package com.flux.recorder
+package com.island.recorder.ui
 
 import android.content.Intent
 import android.graphics.Color
