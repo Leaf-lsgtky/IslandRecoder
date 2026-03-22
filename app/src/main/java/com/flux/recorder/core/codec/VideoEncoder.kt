@@ -10,15 +10,14 @@ import java.nio.ByteBuffer
 
 /**
  * Hardware-accelerated video encoder using MediaCodec
- * Supports H.264/AVC and H.265/HEVC with optional HDR
+ * Supports H.264/AVC and H.265/HEVC (Main10 for 10-bit without forced HDR)
  */
 class VideoEncoder(
     private val width: Int,
     private val height: Int,
     private val bitrate: Int,
     private val frameRate: Int,
-    private val mimeType: String = MediaFormat.MIMETYPE_VIDEO_AVC,
-    private val hdr: Boolean = false
+    private val mimeType: String = MediaFormat.MIMETYPE_VIDEO_AVC
 ) {
     private var mediaCodec: MediaCodec? = null
     var inputSurface: Surface? = null
@@ -41,18 +40,16 @@ class VideoEncoder(
                 setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
                 setLong(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, 1000000L / frameRate)
 
-                // HDR support for H.265
-                if (hdr && mimeType == MediaFormat.MIMETYPE_VIDEO_HEVC) {
+                // H.265/HEVC: Use Main10 profile for 10-bit support without forcing HDR
+                // This allows the system to pass color info automatically without SDR->HDR mapping
+                if (mimeType == MediaFormat.MIMETYPE_VIDEO_HEVC) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        setInteger(MediaFormat.KEY_COLOR_STANDARD, MediaFormat.COLOR_STANDARD_BT2020)
-                        setInteger(MediaFormat.KEY_COLOR_TRANSFER, MediaFormat.COLOR_TRANSFER_HLG)
-                        setInteger(MediaFormat.KEY_COLOR_RANGE, MediaFormat.COLOR_RANGE_FULL)
                         setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain10)
-                        setFeatureEnabled(MediaCodecInfo.CodecCapabilities.FEATURE_HdrEditing, true)
-                        Log.d(TAG, "HDR (HLG) enabled for HEVC encoder")
+                        // Do NOT set color parameters - let system pass screen content as-is
+                        Log.d(TAG, "HEVC Main10 profile enabled (10-bit, no forced HDR)")
                     } else {
-                        setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain10)
-                        Log.d(TAG, "HDR requested but API < 33, using Main10 profile only")
+                        setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain)
+                        Log.d(TAG, "HEVC Main profile enabled (8-bit, API < 33)")
                     }
                 }
             }

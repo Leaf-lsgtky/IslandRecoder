@@ -156,8 +156,7 @@ class RecorderService : Service() {
                     height,
                     bitrate,
                     settings.frameRate.fps,
-                    mimeType = settings.videoCodec.mimeType,
-                    hdr = settings.videoCodec == com.flux.recorder.data.VideoCodec.H265
+                    mimeType = settings.videoCodec.mimeType
                 )
 
                 val surface = videoEncoder?.prepare()
