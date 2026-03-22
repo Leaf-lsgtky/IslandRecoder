@@ -210,6 +210,20 @@ fun SettingsScreen(
                     onClick = { folderPicker.launch(null) }
                 )
             }
+
+            SmallTitle(text = stringResource(R.string.section_about))
+            Card(
+                modifier = Modifier.padding(horizontal = 12.dp)
+            ) {
+                SuperArrow(
+                    title = stringResource(R.string.project_url),
+                    summary = stringResource(R.string.project_url_value),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Leaf-lsgtky/IslandRecoder"))
+                        context.startActivity(intent)
+                    }
+                )
+            }
         }
     }
 }

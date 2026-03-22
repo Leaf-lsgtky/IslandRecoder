@@ -148,4 +148,9 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
+
+    <!-- About -->
+    <string name="section_about">About</string>
+    <string name="project_url">Project URL</string>
+    <string name="project_url_value">https://github.com/Leaf-lsgtky/IslandRecoder</string>
 </resources>
