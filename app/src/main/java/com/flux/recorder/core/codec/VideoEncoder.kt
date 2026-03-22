@@ -74,11 +74,17 @@ class VideoEncoder(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain10)
                         
-                        // Default to SDR to avoid oversaturating SDR content. 
-                        // The app can call updateColorSpace() when HDR content is detected.
-                        applyHdrConfig(HdrConfig.SDR)
-                        isHdrActive = false
-                        Log.d(TAG, "HEVC Main10 profile enabled (Starting in SDR mode)")
+                        // For "Global HDR" effect, we initialize with HDR_HLG from the start.
+                        // This ensures the input Surface is configured for 10-bit HDR data.
+                        applyHdrConfig(HdrConfig.HDR_HLG)
+                        isHdrActive = true
+
+                        // Android 14+ (API 34): Request the system to map content to HLG
+                        if (Build.VERSION.SDK_INT >= 34) {
+                            setInteger("color-transfer-request", COLOR_TRANSFER_HLG)
+                        }
+                        
+                        Log.d(TAG, "Global HDR enabled: HEVC Main10 + BT.2020 + HLG")
                     } else {
                         setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.HEVCProfileMain)
                         Log.d(TAG, "HEVC Main profile enabled (8-bit)")

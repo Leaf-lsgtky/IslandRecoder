@@ -451,22 +451,13 @@ class RecorderService : Service() {
         val displayManager = getSystemService(android.content.Context.DISPLAY_SERVICE) as android.hardware.display.DisplayManager
         val display = displayManager.getDisplay(android.view.Display.DEFAULT_DISPLAY) ?: return
 
-        // Check if the current display mode or content is HDR
-        // On modern Android, the system toggles HDR mode when HDR content is visible
         val isHdr = display.hdrCapabilities?.supportedHdrTypes?.isNotEmpty() == true && 
                      Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
 
-        // Note: In a real scenario, we might want to check more specific flags 
-        // to see if HDR is actually ACTIVE right now.
         if (isHdr != lastHdrState) {
             lastHdrState = isHdr
-            if (isHdr) {
-                Log.d(TAG, "Dynamic HDR detected - switching encoder to HLG")
-                videoEncoder?.switchToHdr(isPq = false) // Default to HLG for better compatibility
-            } else {
-                Log.d(TAG, "SDR content detected - switching encoder to SDR")
-                videoEncoder?.switchToSdr()
-            }
+            Log.d(TAG, "Dynamic content HDR state changed to: $isHdr")
+            // With global HDR enabled, we stay in HLG mode to avoid glitches during transition.
         }
     }
 
