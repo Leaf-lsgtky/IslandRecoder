@@ -4,6 +4,7 @@ import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaFormat
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import android.view.Surface
 import java.nio.ByteBuffer
@@ -124,17 +125,20 @@ class VideoEncoder(
         if (newIsHdr == isHdrActive) return // No change needed
 
         try {
-            val params = mutableMapOf<String, Any>()
-            params[MediaFormat.KEY_COLOR_STANDARD] = hdrConfig.standard
-            params[MediaFormat.KEY_COLOR_TRANSFER] = hdrConfig.transfer
-            params[MediaFormat.KEY_COLOR_RANGE] = hdrConfig.range
+            // Use Bundle for setParameters (API 29+)
+            val params = Bundle()
+            params.putInt(MediaFormat.KEY_COLOR_STANDARD, hdrConfig.standard)
+            params.putInt(MediaFormat.KEY_COLOR_TRANSFER, hdrConfig.transfer)
+            params.putInt(MediaFormat.KEY_COLOR_RANGE, hdrConfig.range)
 
             // Force an I-frame before changing color space
-            val iFrameParams = mutableMapOf<String, Any>()
-            iFrameParams[MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME] = 0
+            val iFrameParams = Bundle()
+            iFrameParams.putInt(MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME, 0)
 
-            mediaCodec?.setParameters(iFrameParams)
-            mediaCodec?.setParameters(params)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mediaCodec?.setParameters(iFrameParams)
+                mediaCodec?.setParameters(params)
+            }
 
             isHdrActive = newIsHdr
             Log.d(TAG, "Color space updated: HDR=$isHdrActive (standard=${hdrConfig.standard}, transfer=${hdrConfig.transfer})")

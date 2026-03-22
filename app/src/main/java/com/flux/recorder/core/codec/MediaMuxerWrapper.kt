@@ -81,9 +81,10 @@ class MediaMuxerWrapper(private val outputFile: File) {
 
         Log.d(TAG, "Injecting HDR metadata: transfer=$transfer")
 
-        // Mastering display color volume (Rec. ITU-R BT.2020)
-        // G(8500, 39850), B(65535, 2300), R(35400, 14600), White(15635, 16450), L(10000000, 50)
+        // HDR metadata keys are only available on Android 14+ (API 34)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // Mastering display color volume (Rec. ITU-R BT.2020)
+            // G(8500, 39850), B(65535, 2300), R(35400, 14600), White(15635, 16450), L(10000000, 50)
             format.setByteBuffer(MediaFormat.KEY_MASTERING_DISPLAY_COLOR_VOLUME,
                 createMasteringDisplayData(
                     rX = 35400, rY = 14600,
@@ -92,16 +93,12 @@ class MediaMuxerWrapper(private val outputFile: File) {
                     whiteX = 15635, whiteY = 16450,
                     maxLum = 10000000, minLum = 50
                 ))
-        }
 
-        // Content light level (MaxCLL, MaxFALL)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // Content light level (MaxCLL, MaxFALL)
             format.setByteBuffer(MediaFormat.KEY_CONTENT_LIGHT_LEVEL,
                 createContentLightLevelData(maxCLL = 1000, maxFALL = 400))
-        }
 
-        // HDR static metadata (Max Display Mastering Luminance)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            // HDR static metadata (Max Display Mastering Luminance)
             format.setInteger(MediaFormat.KEY_HDR_STATIC_INFO_BYTES, 1)
         }
     }
