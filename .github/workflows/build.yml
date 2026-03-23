@@ -1,29 +1,27 @@
-name: Android CI/CD
+name: Android Build
 
 on:
   push:
     branches: [ "master", "main", "develop" ]
-    tags: [ "v*" ] # 当推送 v1.0.0 等标签时触发 Release 流程
+    tags: [ "*" ] # 只要打标签就触发 Release
   pull_request:
     branches: [ "master", "main", "develop" ]
-  workflow_dispatch: # 支持手动点击运行
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 极其重要：必须有权写入 Release
+      contents: write
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # 获取完整历史以计算版本信息
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
@@ -32,73 +30,64 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # 1. 动态准备版本信息
-      - name: Prepare Versioning
-        id: prep
-        run: |
-          # 获取 Tag 名，如果没有 Tag 则显示分支名
-          VERSION_NAME=${GITHUB_REF#refs/tags/}
-          if [[ "$VERSION_NAME" == "refs/heads/"* ]]; then
-            VERSION_NAME="1.0.0-snapshot"
-          fi
-          echo "VERSION_NAME=${VERSION_NAME}" >> $GITHUB_ENV
-          echo "BUILD_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
+      # 编译 Debug 版
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
-      # 2. 编译 Release APK (注入动态版本号)
+      # 编译 Release 版
       - name: Build Release APK
-        run: |
-          ./gradlew assembleRelease \
-            -PcustomVersionCode=${{ env.BUILD_NUMBER }} \
-            -PcustomVersionName=${{ env.VERSION_NAME }}
+        run: ./gradlew assembleRelease
 
-      # 3. 签名步骤 (使用你最稳健的 apksigner 方案)
-      - name: Sign APK
-        if: env.SIGNING_KEY != ''
+      # 签名并统一命名
+      - name: Sign and Rename APK
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
         run: |
-          # 还原 Keystore
-          echo "${{ secrets.SIGNING_KEY }}" | base64 -d > /tmp/release.jks
-          
-          # 获取最新的 Android Build Tools 路径
-          BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -1)
-          
-          # 查找生成的未签名 APK
-          UNSIGNED_APK=$(find app/build/outputs/apk/release -name "*-release-unsigned.apk" | head -1)
-          SIGNED_APK="app/build/outputs/apk/release/OppoPods-${{ env.VERSION_NAME }}.apk"
-          
-          # Zipalign 优化
-          ${BUILD_TOOLS}zipalign -f 4 "$UNSIGNED_APK" "$SIGNED_APK"
-          
-          # 正式签名 (V2/V3)
-          ${BUILD_TOOLS}apksigner sign \
-            --ks /tmp/release.jks \
-            --ks-key-alias "${{ secrets.ALIAS }}" \
-            --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
-            --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
-            "$SIGNED_APK"
-          
-          # 验证签名
-          ${BUILD_TOOLS}apksigner verify "$SIGNED_APK"
-          
-          # 清理
-          rm /tmp/release.jks
+          # 1. 处理 Debug 包：直接重命名
+          DEBUG_PATH=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
+          mv "$DEBUG_PATH" app/build/outputs/apk/debug/debug.apk
 
-      # 4. 上传到 Action Artifacts (方便调试)
+          # 2. 处理 Release 包：如果有 Key 就签名并改名
+          if [ -n "$SIGNING_KEY" ]; then
+            echo "$SIGNING_KEY" | base64 -d > /tmp/release.jks
+            BUILD_TOOLS=$(ls -d $ANDROID_HOME/build-tools/*/ | sort -V | tail -1)
+            UNSIGNED_APK=$(find app/build/outputs/apk/release -name "*-unsigned.apk" | head -1)
+            
+            # Zipalign 并重命名为 release.apk
+            ${BUILD_TOOLS}zipalign -f 4 "$UNSIGNED_APK" app/build/outputs/apk/release/release.apk
+            
+            # 签名
+            ${BUILD_TOOLS}apksigner sign \
+              --ks /tmp/release.jks \
+              --ks-key-alias "${{ secrets.ALIAS }}" \
+              --ks-pass "pass:${{ secrets.KEYSTORE_PASSWORD }}" \
+              --key-pass "pass:${{ secrets.KEY_PASSWORD }}" \
+              app/build/outputs/apk/release/release.apk
+            
+            rm /tmp/release.jks
+          else
+            # 如果没配置签名，就把未命名的包改名为 release-unsigned.apk 方便区分
+            RELEASE_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+            mv "$RELEASE_PATH" app/build/outputs/apk/release/release-unsigned.apk
+          fi
+
+      # 上传 Artifacts (Action 里的产物)
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: OppoPods-Build-${{ env.VERSION_NAME }}
-          path: app/build/outputs/apk/release/*.apk
+          name: apks
+          path: |
+            app/build/outputs/apk/debug/debug.apk
+            app/build/outputs/apk/release/release.apk
 
-      # 5. 自动发布到 GitHub Release
+      # 发布到 Release 页面
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: app/build/outputs/apk/release/OppoPods-v*.apk
+          files: |
+            app/build/outputs/apk/debug/debug.apk
+            app/build/outputs/apk/release/release.apk
           generate_release_notes: true
-          # 确保文件名在 Release 页面看起来很漂亮
-          name: "OppoPods ${{ env.VERSION_NAME }} (Build ${{ env.BUILD_NUMBER }})"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
