@@ -200,7 +200,21 @@ fun SettingsScreen(
                 )
 
                 // Tile Style
-                val tileStyleItems = TileStyle.entries.map { stringResource(it.labelResId) }
+                val tileStyleItems = TileStyle.entries.map { style ->
+                    SpinnerEntry(
+                        icon = { modifier ->
+                            Icon(
+                                painter = androidx.compose.ui.res.painterResource(
+                                    if (style == TileStyle.APP_ICON) R.drawable.ic_launcher_foreground
+                                    else R.drawable.ic_record
+                                ),
+                                contentDescription = null,
+                                modifier = modifier
+                            )
+                        },
+                        title = stringResource(style.labelResId)
+                    )
+                }
                 SuperSpinner(
                     title = stringResource(R.string.tile_style),
                     summary = stringResource(R.string.tile_style_summary),
