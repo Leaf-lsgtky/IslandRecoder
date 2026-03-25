@@ -46,13 +46,12 @@
     <string name="video_codec_summary">H.265 supports HDR and is more efficient</string>
     <string name="show_touches">Show Screen Touches</string>
     <string name="show_touches_summary">Show a white dot where fingers touch (Root Required)</string>
+    <string name="tile_style">Quick Tile Icon Style</string>
+    <string name="tile_style_summary">Choose the icon style for the Quick Settings tile</string>
+    <string name="tile_style_default">Default</string>
+    <string name="tile_style_app_icon">App Icon Foreground</string>
     <string name="section_storage">Storage</string>
     <string name="storage_path">Storage Path</string>
-
-    <!-- HyperOS -->
-    <string name="section_hyperos">MIUI/HyperOS Optimization</string>
-    <string name="shizuku_focus_bypass">Focus Island Shizuku Bypass</string>
-    <string name="shizuku_focus_bypass_summary">Bypass HyperOS Focus Island whitelist via Shizuku (Requires Shizuku to be running)</string>
 
     <!-- Quality Options -->
     <string name="quality_native">Native</string>

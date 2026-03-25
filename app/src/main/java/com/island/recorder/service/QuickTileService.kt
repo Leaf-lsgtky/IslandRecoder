@@ -6,9 +6,12 @@ import android.os.Build
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.util.Log
+import android.graphics.drawable.Icon
 import com.island.recorder.R
 import com.island.recorder.RecordingShortcutActivity
 import com.island.recorder.data.RecordingState
+import com.island.recorder.data.TileStyle
+import com.island.recorder.utils.PreferencesManager
 
 class QuickTileService : TileService() {
 
@@ -56,9 +59,18 @@ class QuickTileService : TileService() {
     }
 
     private fun updateTile(isRecording: Boolean) {
+        val prefs = PreferencesManager(this)
+        val tileStyle = prefs.getRecordingSettings().tileStyle
+        val iconRes = if (tileStyle == TileStyle.APP_ICON) {
+            R.drawable.ic_launcher_foreground
+        } else {
+            R.drawable.ic_record
+        }
+
         qsTile?.apply {
             state = if (isRecording) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
             label = if (isRecording) getString(R.string.tile_stop_recording) else getString(R.string.tile_start_recording)
+            icon = Icon.createWithResource(this@QuickTileService, iconRes)
             updateTile()
         }
     }

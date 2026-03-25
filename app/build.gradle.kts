@@ -137,10 +137,6 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
     
-    // Shizuku
-    implementation(libs.rikka.shizuku.api)
-    implementation(libs.rikka.shizuku.provider)
-    
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

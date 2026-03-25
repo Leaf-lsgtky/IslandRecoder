@@ -47,15 +47,15 @@
     <string name="video_codec_summary">H.265 支持 HDR 且更高效</string>
     <string name="show_touches">显示屏幕触摸</string>
     <string name="show_touches_summary">手指点击的地方显示小白点 (需要 Root)</string>
+    <string name="tile_style">快捷磁贴图标样式</string>
+    <string name="tile_style_summary">选择快捷设置磁贴的图标样式</string>
+    <string name="tile_style_default">默认</string>
+    <string name="tile_style_app_icon">应用图标前景</string>
     <string name="section_storage">存储</string>
     <string name="storage_path">存储路径</string>
 
-    <!-- HyperOS -->
-    <string name="section_hyperos">MIUI/HyperOS 优化</string>
-    <string name="shizuku_focus_bypass">Shizuku 焦点通知绕过</string>
-    <string name="shizuku_focus_bypass_summary">使用 Shizuku 绕过 HyperOS 焦点通知白名单 (需要 Shizuku 正在运行)</string>
-
     <!-- Quality Options -->
+
     <string name="quality_native">原生</string>
     <string name="quality_fhd">1080p</string>
     <string name="quality_high">720p</string>

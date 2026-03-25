@@ -89,6 +89,14 @@ enum class VideoCodec(val mimeType: String, @StringRes val labelResId: Int, val 
 }
 
 /**
+ * Quick settings tile icon style
+ */
+enum class TileStyle(@StringRes val labelResId: Int) {
+    DEFAULT(R.string.tile_style_default),
+    APP_ICON(R.string.tile_style_app_icon)
+}
+
+/**
  * Recording configuration settings
  */
 @Parcelize
@@ -99,7 +107,8 @@ data class RecordingSettings(
     val frameRate: FrameRate = FrameRate.FPS_30,
     val audioSource: AudioSource = AudioSource.BOTH,
     val videoCodec: VideoCodec = VideoCodec.H264,
-    val showTouches: Boolean = false
+    val showTouches: Boolean = false,
+    val tileStyle: TileStyle = TileStyle.DEFAULT
 ) : Parcelable {
     /**
      * Calculate bitrate: fixed value if user chose one, otherwise auto-compute

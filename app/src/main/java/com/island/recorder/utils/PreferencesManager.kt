@@ -6,6 +6,7 @@ import com.island.recorder.data.AudioSource
 import com.island.recorder.data.FrameRate
 import com.island.recorder.data.RecordingSettings
 import com.island.recorder.data.ScreenOrientation
+import com.island.recorder.data.TileStyle
 import com.island.recorder.data.VideoBitrate
 import com.island.recorder.data.VideoCodec
 import com.island.recorder.data.VideoQuality
@@ -27,18 +28,10 @@ class PreferencesManager(context: Context) {
         private const val KEY_AUDIO_SOURCE = "audio_source"
         private const val KEY_VIDEO_CODEC = "video_codec"
         private const val KEY_SHOW_TOUCHES = "show_touches"
+        private const val KEY_TILE_STYLE = "tile_style"
         private const val KEY_STORAGE_PATH = "storage_path"
-        private const val KEY_SHIZUKU_FOCUS_BYPASS = "shizuku_focus_bypass"
 
         private const val KEY_FIRST_LAUNCH = "first_launch"
-    }
-
-    fun isShizukuFocusBypassEnabled(): Boolean {
-        return prefs.getBoolean(KEY_SHIZUKU_FOCUS_BYPASS, false)
-    }
-
-    fun setShizukuFocusBypassEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(KEY_SHIZUKU_FOCUS_BYPASS, enabled).apply()
     }
 
     fun getRecordingSettings(): RecordingSettings {
@@ -91,7 +84,15 @@ class PreferencesManager(context: Context) {
             } catch (_: IllegalArgumentException) {
                 VideoCodec.H264
             },
-            showTouches = prefs.getBoolean(KEY_SHOW_TOUCHES, false)
+            showTouches = prefs.getBoolean(KEY_SHOW_TOUCHES, false),
+            tileStyle = try {
+                TileStyle.valueOf(
+                    prefs.getString(KEY_TILE_STYLE, TileStyle.DEFAULT.name)
+                        ?: TileStyle.DEFAULT.name
+                )
+            } catch (_: IllegalArgumentException) {
+                TileStyle.DEFAULT
+            }
         )
     }
 
@@ -104,6 +105,7 @@ class PreferencesManager(context: Context) {
             putString(KEY_AUDIO_SOURCE, settings.audioSource.name)
             putString(KEY_VIDEO_CODEC, settings.videoCodec.name)
             putBoolean(KEY_SHOW_TOUCHES, settings.showTouches)
+            putString(KEY_TILE_STYLE, settings.tileStyle.name)
             apply()
         }
     }
