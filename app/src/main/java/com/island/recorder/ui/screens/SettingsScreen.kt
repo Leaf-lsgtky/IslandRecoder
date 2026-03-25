@@ -205,7 +205,7 @@ fun SettingsScreen(
                         icon = { modifier ->
                             Icon(
                                 painter = androidx.compose.ui.res.painterResource(
-                                    if (style == TileStyle.APP_ICON) R.drawable.ic_launcher_foreground
+                                    if (style == TileStyle.APP_ICON) R.drawable.ic_launcher_foreground_small
                                     else R.drawable.ic_record
                                 ),
                                 contentDescription = null,
