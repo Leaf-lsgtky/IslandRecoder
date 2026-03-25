@@ -1,4 +1,4 @@
-name: Build OppoPods v7-Final
+name: Android Build
 
 on:
   push:
