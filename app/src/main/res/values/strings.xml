@@ -47,7 +47,10 @@
     <string name="show_touches">Show Screen Touches</string>
     <string name="show_touches_summary">Show a white dot where fingers touch (Root Required)</string>
     <string name="bypass_focus_island">Bypass Xiaomi Focus Island Whitelist</string>
-    <string name="bypass_focus_island_summary">Temporarily disconnect XMSF network when sending notifications to bypass system whitelist (Requires Shizuku)</string>
+    <string name="bypass_focus_island_summary">Temporarily disconnect XMSF network when sending notifications to bypass system whitelist (Requires Shizuku)\nStatus: %1$s</string>
+    <string name="shizuku_status_authorized">Authorized</string>
+    <string name="shizuku_status_not_authorized">Not Authorized</string>
+    <string name="shizuku_status_not_running">Not Running</string>
     <string name="tile_style">Quick Tile Icon Style</string>
     <string name="tile_style_summary">Choose the icon style for the Quick Settings tile</string>
     <string name="tile_style_default">Recording Style</string>

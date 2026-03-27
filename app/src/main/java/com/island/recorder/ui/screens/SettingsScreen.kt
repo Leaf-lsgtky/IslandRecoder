@@ -200,15 +200,48 @@ fun SettingsScreen(
                     }
                 )
 
-                val hasShizuku = remember { ShizukuHelper.isAvailable() }
+                var shizukuStatus by remember {
+                    mutableStateOf(
+                        when {
+                            !ShizukuHelper.isAvailable() -> "shizuku_status_not_running"
+                            !ShizukuHelper.hasPermission() -> "shizuku_status_not_authorized"
+                            else -> "shizuku_status_authorized"
+                        }
+                    )
+                }
+
+                DisposableEffect(Unit) {
+                    val listener = Shizuku.OnRequestPermissionResultListener { _, _ ->
+                        shizukuStatus = if (ShizukuHelper.hasPermission()) {
+                            "shizuku_status_authorized"
+                        } else {
+                            "shizuku_status_not_authorized"
+                        }
+                    }
+                    ShizukuHelper.addPermissionResultListener(listener)
+                    onDispose {
+                        ShizukuHelper.removePermissionResultListener(listener)
+                    }
+                }
+
+                val statusText = when (shizukuStatus) {
+                    "shizuku_status_authorized" -> stringResource(R.string.shizuku_status_authorized)
+                    "shizuku_status_not_authorized" -> stringResource(R.string.shizuku_status_not_authorized)
+                    else -> stringResource(R.string.shizuku_status_not_running)
+                }
+
                 SuperSwitch(
                     title = stringResource(R.string.bypass_focus_island),
-                    summary = stringResource(R.string.bypass_focus_island_summary),
+                    summary = stringResource(R.string.bypass_focus_island_summary, statusText),
                     checked = currentSettings.bypassFocusIsland,
-                    enabled = hasShizuku,
+                    enabled = true,
                     onCheckedChange = {
-                        if (it && !ShizukuHelper.hasPermission()) {
-                            ShizukuHelper.requestPermission(1001)
+                        if (it) {
+                            if (!ShizukuHelper.isAvailable()) {
+                                android.util.Log.w("SettingsScreen", "Shizuku not running")
+                            } else if (!ShizukuHelper.hasPermission()) {
+                                ShizukuHelper.requestPermission(1001)
+                            }
                         }
                         currentSettings = currentSettings.copy(bypassFocusIsland = it)
                         onSettingsChanged(currentSettings)

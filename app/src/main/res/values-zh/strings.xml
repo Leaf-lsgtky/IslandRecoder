@@ -48,7 +48,10 @@
     <string name="show_touches">显示屏幕触摸</string>
     <string name="show_touches_summary">手指点击的地方显示小白点 (需要 Root)</string>
     <string name="bypass_focus_island">绕过小米超级岛白名单</string>
-    <string name="bypass_focus_island_summary">发送通知时临时断开 XMSF 网络以绕过系统白名单限制 (需要 Shizuku)</string>
+    <string name="bypass_focus_island_summary">发送通知时临时断开 XMSF 网络以绕过系统白名单限制 (需要 Shizuku)\n状态: %1$s</string>
+    <string name="shizuku_status_authorized">已授权</string>
+    <string name="shizuku_status_not_authorized">未授权</string>
+    <string name="shizuku_status_not_running">未运行</string>
     <string name="tile_style">快捷磁贴图标样式</string>
     <string name="tile_style_summary">选择快捷设置磁贴的图标样式</string>
     <string name="tile_style_default">录制样式</string>

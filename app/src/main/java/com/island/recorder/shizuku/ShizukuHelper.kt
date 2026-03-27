@@ -33,6 +33,14 @@ object ShizukuHelper {
         Shizuku.requestPermission(requestCode)
     }
 
+    fun addPermissionResultListener(listener: Shizuku.OnRequestPermissionResultListener) {
+        Shizuku.addRequestPermissionResultListener(listener)
+    }
+
+    fun removePermissionResultListener(listener: Shizuku.OnRequestPermissionResultListener) {
+        Shizuku.removeRequestPermissionResultListener(listener)
+    }
+
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             privilegedService = IPrivilegedService.Stub.asInterface(service)
