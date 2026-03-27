@@ -6,13 +6,16 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.island.recorder.ui.MainActivity
 import com.island.recorder.R
 import com.island.recorder.service.RecorderService
+import com.island.recorder.shizuku.ShizukuHelper
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -23,6 +26,9 @@ class NotificationHelper(private val context: Context) {
     companion object {
         const val CHANNEL_ID = "recording_channel"
         const val NOTIFICATION_ID = 1001
+        private const val TAG = "NotificationHelper"
+        private const val XMSF_PACKAGE = "com.xiaomi.xmsf"
+        private const val BLIND_WINDOW_MS = 100L
     }
 
     init {
@@ -45,7 +51,8 @@ class NotificationHelper(private val context: Context) {
 
     fun createRecordingNotification(
         durationMs: Long,
-        isPaused: Boolean = false
+        isPaused: Boolean = false,
+        bypass: Boolean = false
     ): Notification {
         val contentIntent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -241,8 +248,30 @@ class NotificationHelper(private val context: Context) {
         notification.extras.putBundle("miui.focus.pics", picsBundle)
     }
 
-    fun updateNotification(notification: Notification) {
-        notificationManager.notify(NOTIFICATION_ID, notification)
+    fun updateNotification(notification: Notification, bypass: Boolean = false) {
+        if (bypass && ShizukuHelper.isAvailable() && ShizukuHelper.hasPermission()) {
+            val xmsfUid = try {
+                context.packageManager.getPackageUid(XMSF_PACKAGE, 0)
+            } catch (_: PackageManager.NameNotFoundException) {
+                notificationManager.notify(NOTIFICATION_ID, notification)
+                return
+            }
+
+            // Sync block
+            val blocked = ShizukuHelper.setPackageNetworkingEnabled(xmsfUid, false)
+            notificationManager.notify(NOTIFICATION_ID, notification)
+
+            if (blocked) {
+                Thread {
+                    try {
+                        Thread.sleep(BLIND_WINDOW_MS)
+                    } catch (_: Exception) {}
+                    ShizukuHelper.setPackageNetworkingEnabled(xmsfUid, true)
+                }.start()
+            }
+        } else {
+            notificationManager.notify(NOTIFICATION_ID, notification)
+        }
     }
 
     fun cancelNotification() {

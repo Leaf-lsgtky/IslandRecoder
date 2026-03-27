@@ -2,6 +2,7 @@ package com.island.recorder.service
 
 import android.app.Service
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
@@ -50,6 +51,7 @@ class RecorderService : Service() {
     private var startTime: Long = 0
     private var pausedDuration: Long = 0
     private var pauseStartTime: Long = 0
+    private var currentSettings: RecordingSettings? = null
 
     private var lastHdrState = false
     private val displayListener = object : android.hardware.display.DisplayManager.DisplayListener {
@@ -117,6 +119,7 @@ class RecorderService : Service() {
             Log.w(TAG, "Recording already in progress")
             return
         }
+        currentSettings = settings
 
         // Show processing state immediately for responsive UI
         _recordingState.value = RecordingState.Processing(0)
@@ -129,7 +132,7 @@ class RecorderService : Service() {
 
         try {
             // Start foreground service (must happen on main thread)
-            val notification = notificationHelper.createRecordingNotification(0L)
+            val notification = notificationHelper.createRecordingNotification(0L, bypass = settings.bypassFocusIsland)
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                 var foregroundServiceType = android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
@@ -287,9 +290,9 @@ class RecorderService : Service() {
                 if (now - lastPauseNotificationUpdate >= 1000) {
                     lastPauseNotificationUpdate = now
                     val notification = notificationHelper.createRecordingNotification(
-                        state.durationMs, isPaused = true
+                        state.durationMs, isPaused = true, bypass = settings.bypassFocusIsland
                     )
-                    notificationHelper.updateNotification(notification)
+                    notificationHelper.updateNotification(notification, bypass = settings.bypassFocusIsland)
                 }
                 delay(10)
                 continue
@@ -334,8 +337,8 @@ class RecorderService : Service() {
                 val currentSecond = currentDuration / 1000
                 if (currentSecond != lastNotificationUpdate) {
                     lastNotificationUpdate = currentSecond
-                    val notification = notificationHelper.createRecordingNotification(currentDuration)
-                    notificationHelper.updateNotification(notification)
+                    val notification = notificationHelper.createRecordingNotification(currentDuration, bypass = settings.bypassFocusIsland)
+                    notificationHelper.updateNotification(notification, bypass = settings.bypassFocusIsland)
                 }
 
                 delay(10) // Small delay to prevent busy waiting
@@ -433,9 +436,9 @@ class RecorderService : Service() {
             _recordingState.value = RecordingState.Paused(currentState.durationMs)
 
             val notification = notificationHelper.createRecordingNotification(
-                currentState.durationMs, isPaused = true
+                currentState.durationMs, isPaused = true, bypass = currentSettings?.bypassFocusIsland ?: false
             )
-            notificationHelper.updateNotification(notification)
+            notificationHelper.updateNotification(notification, bypass = currentSettings?.bypassFocusIsland ?: false)
         }
     }
 
@@ -450,8 +453,8 @@ class RecorderService : Service() {
             }
             _recordingState.value = RecordingState.Recording(currentState.durationMs)
 
-            val notification = notificationHelper.createRecordingNotification(currentState.durationMs)
-            notificationHelper.updateNotification(notification)
+            val notification = notificationHelper.createRecordingNotification(currentState.durationMs, bypass = currentSettings?.bypassFocusIsland ?: false)
+            notificationHelper.updateNotification(notification, bypass = currentSettings?.bypassFocusIsland ?: false)
         }
     }
 

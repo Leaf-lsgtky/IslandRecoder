@@ -28,6 +28,7 @@ class PreferencesManager(context: Context) {
         private const val KEY_AUDIO_SOURCE = "audio_source"
         private const val KEY_VIDEO_CODEC = "video_codec"
         private const val KEY_SHOW_TOUCHES = "show_touches"
+        private const val KEY_BYPASS_FOCUS_ISLAND = "bypass_focus_island"
         private const val KEY_TILE_STYLE = "tile_style"
         private const val KEY_STORAGE_PATH = "storage_path"
 
@@ -85,6 +86,7 @@ class PreferencesManager(context: Context) {
                 VideoCodec.H264
             },
             showTouches = prefs.getBoolean(KEY_SHOW_TOUCHES, false),
+            bypassFocusIsland = prefs.getBoolean(KEY_BYPASS_FOCUS_ISLAND, false),
             tileStyle = try {
                 TileStyle.valueOf(
                     prefs.getString(KEY_TILE_STYLE, TileStyle.DEFAULT.name)
@@ -105,6 +107,7 @@ class PreferencesManager(context: Context) {
             putString(KEY_AUDIO_SOURCE, settings.audioSource.name)
             putString(KEY_VIDEO_CODEC, settings.videoCodec.name)
             putBoolean(KEY_SHOW_TOUCHES, settings.showTouches)
+            putBoolean(KEY_BYPASS_FOCUS_ISLAND, settings.bypassFocusIsland)
             putString(KEY_TILE_STYLE, settings.tileStyle.name)
             apply()
         }

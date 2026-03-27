@@ -70,6 +70,7 @@ android {
 
     buildFeatures {
         compose = true
+        aidl = true
     }
     
     packaging {
@@ -136,6 +137,10 @@ dependencies {
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Shizuku
+    implementation(libs.shizuku.api)
+    implementation(libs.shizuku.provider)
     
     // Testing
     testImplementation(libs.junit)

@@ -28,6 +28,7 @@ import com.island.recorder.data.VideoQuality
 import com.island.recorder.utils.FileManager
 import com.island.recorder.utils.PreferencesManager
 import com.island.recorder.utils.RootUtils
+import com.island.recorder.shizuku.ShizukuHelper
 import top.yukonga.miuix.kmp.basic.*
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDropdown
@@ -196,6 +197,21 @@ fun SettingsScreen(
                         currentSettings = currentSettings.copy(showTouches = it)
                         onSettingsChanged(currentSettings)
                         // Touch visualization will be enabled/disabled during recording
+                    }
+                )
+
+                val hasShizuku = remember { ShizukuHelper.isAvailable() }
+                SuperSwitch(
+                    title = stringResource(R.string.bypass_focus_island),
+                    summary = stringResource(R.string.bypass_focus_island_summary),
+                    checked = currentSettings.bypassFocusIsland,
+                    enabled = hasShizuku,
+                    onCheckedChange = {
+                        if (it && !ShizukuHelper.hasPermission()) {
+                            ShizukuHelper.requestPermission(1001)
+                        }
+                        currentSettings = currentSettings.copy(bypassFocusIsland = it)
+                        onSettingsChanged(currentSettings)
                     }
                 )
 
