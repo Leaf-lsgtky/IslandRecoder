@@ -135,15 +135,19 @@ fun SettingsScreen(
                     enabled = !isProjectMediaGranted && (isRooted || isShizukuAvailable),
                     onCheckedChange = {
                         if (it) {
-                            val cmd = "appops set ${context.packageName} PROJECT_MEDIA allow"
-                            val success = if (isRooted) {
-                                RootUtils.setAppOp(context.packageName, "PROJECT_MEDIA", "allow")
-                            } else if (isShizukuAvailable) {
-                                ShizukuHelper.execShell(cmd) == 0
+                            if (!isRooted && isShizukuAvailable && !ShizukuHelper.hasPermission()) {
+                                ShizukuHelper.requestPermission(1001)
                             } else {
-                                false
+                                val cmd = "appops set ${context.packageName} PROJECT_MEDIA allow"
+                                val success = if (isRooted) {
+                                    RootUtils.setAppOp(context.packageName, "PROJECT_MEDIA", "allow")
+                                } else if (isShizukuAvailable) {
+                                    ShizukuHelper.execShell(cmd) == 0
+                                } else {
+                                    false
+                                }
+                                if (success) isProjectMediaGranted = true
                             }
-                            if (success) isProjectMediaGranted = true
                         }
                     }
                 )
