@@ -317,7 +317,7 @@ fun SettingsScreen(
                             ) {
                                 Text(
                                     text = stringResource(R.string.xmsf_block_duration_summary),
-                                    style = MiuixTheme.textStyles.caption,
+                                    style = MiuixTheme.textStyles.body2,
                                     color = MiuixTheme.colorScheme.onBackgroundVariant
                                 )
                                 Text(
@@ -337,6 +337,7 @@ fun SettingsScreen(
                                 valueRange = 50f..200f,
                                 steps = 150,
                                 keyPoints = listOf(75f, 100f, 150f),
+                                caption = stringResource(R.string.xmsf_block_duration),
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
