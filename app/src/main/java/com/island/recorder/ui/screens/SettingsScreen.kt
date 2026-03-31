@@ -307,40 +307,22 @@ fun SettingsScreen(
 
                 // XMSF Block Duration (always visible, enabled only when bypass is active)
                 Card(
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp)
+                        .padding(bottom = 6.dp),
+                    insideMargin = PaddingValues(0.dp)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(R.string.xmsf_block_duration),
-                                style = MiuixTheme.textStyles.subtitle,
-                                color = if (currentSettings.bypassFocusIsland)
-                                    MiuixTheme.colorScheme.onSurface
-                                else
-                                    MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                            )
-                            Text(
-                                text = "${currentSettings.xmsfBlockDurationMs}ms",
-                                style = MiuixTheme.textStyles.subtitle,
-                                color = if (currentSettings.bypassFocusIsland)
-                                    MiuixTheme.colorScheme.primary
-                                else
-                                    MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
+                    Column {
                         Text(
-                            text = stringResource(R.string.xmsf_block_duration_summary),
-                            style = MiuixTheme.textStyles.body2,
+                            text = stringResource(R.string.xmsf_block_duration),
+                            style = MiuixTheme.textStyles.subtitle,
                             color = if (currentSettings.bypassFocusIsland)
-                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                MiuixTheme.colorScheme.onSurface
                             else
-                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                                MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
                         Slider(
                             value = currentSettings.xmsfBlockDurationMs.toFloat(),
                             onValueChange = {
@@ -354,7 +336,19 @@ fun SettingsScreen(
                             keyPoints = listOf(75f, 100f, 150f),
                             showKeyPoints = currentSettings.bypassFocusIsland,
                             enabled = currentSettings.bypassFocusIsland,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = 12.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.xmsf_block_duration_summary),
+                            style = MiuixTheme.textStyles.body2,
+                            color = if (currentSettings.bypassFocusIsland)
+                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                            else
+                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.3f),
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                         )
                     }
                 }
