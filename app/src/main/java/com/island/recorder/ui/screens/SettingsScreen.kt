@@ -38,7 +38,6 @@ import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSpinner
 import top.yukonga.miuix.kmp.extra.SuperSwitch
-import top.yukonga.miuix.kmp.extra.BasicComponentColors
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Back
 import top.yukonga.miuix.kmp.utils.overScrollVertical
@@ -318,15 +317,7 @@ fun SettingsScreen(
                     SuperArrow(
                         title = stringResource(R.string.xmsf_block_duration),
                         summary = "${currentSettings.xmsfBlockDurationMs}ms",
-                        enabled = currentSettings.bypassFocusIsland,
-                        titleColor = BasicComponentColors(
-                            color = MiuixTheme.colorScheme.onSurface,
-                            disabledColor = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                        ),
-                        summaryColor = BasicComponentColors(
-                            color = MiuixTheme.colorScheme.primary,
-                            disabledColor = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                        )
+                        enabled = currentSettings.bypassFocusIsland
                     )
                     Slider(
                         value = currentSettings.xmsfBlockDurationMs.toFloat(),
