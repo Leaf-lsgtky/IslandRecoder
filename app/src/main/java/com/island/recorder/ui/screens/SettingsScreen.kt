@@ -316,7 +316,7 @@ fun SettingsScreen(
                         ) {
                             Text(
                                 text = stringResource(R.string.xmsf_block_duration),
-                                style = MiuixTheme.textStyles.title,
+                                style = MiuixTheme.textStyles.subtitle,
                                 color = if (currentSettings.bypassFocusIsland)
                                     MiuixTheme.colorScheme.onSurface
                                 else
@@ -324,7 +324,7 @@ fun SettingsScreen(
                             )
                             Text(
                                 text = "${currentSettings.xmsfBlockDurationMs}ms",
-                                style = MiuixTheme.textStyles.title,
+                                style = MiuixTheme.textStyles.subtitle,
                                 color = if (currentSettings.bypassFocusIsland)
                                     MiuixTheme.colorScheme.primary
                                 else
@@ -336,9 +336,9 @@ fun SettingsScreen(
                             text = stringResource(R.string.xmsf_block_duration_summary),
                             style = MiuixTheme.textStyles.body2,
                             color = if (currentSettings.bypassFocusIsland)
-                                MiuixTheme.colorScheme.onSurfaceVariant
+                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                             else
-                                MiuixTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.3f)
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Slider(
