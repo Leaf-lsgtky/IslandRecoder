@@ -327,7 +327,7 @@ fun SettingsScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             Slider(
                                 value = currentSettings.xmsfBlockDurationMs.toFloat(),
                                 onValueChange = {
@@ -337,7 +337,7 @@ fun SettingsScreen(
                                 valueRange = 50f..200f,
                                 steps = 150,
                                 keyPoints = listOf(75f, 100f, 150f),
-                                caption = stringResource(R.string.xmsf_block_duration),
+                                showKeyPoints = true,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
