@@ -306,18 +306,14 @@ fun SettingsScreen(
                     }
                 )
 
-                // XMSF Block Duration (always visible, enabled only when bypass is active)
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp)
-                        .padding(bottom = 6.dp)
+                // XMSF Block Duration
+                BasicComponent(
+                    modifier = Modifier.fillMaxWidth(),
+                    title = stringResource(R.string.xmsf_block_duration),
+                    summary = "${currentSettings.xmsfBlockDurationMs}ms",
+                    enabled = currentSettings.bypassFocusIsland,
+                    insideMargin = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    SuperArrow(
-                        title = stringResource(R.string.xmsf_block_duration),
-                        summary = "${currentSettings.xmsfBlockDurationMs}ms",
-                        enabled = currentSettings.bypassFocusIsland
-                    )
                     Slider(
                         value = currentSettings.xmsfBlockDurationMs.toFloat(),
                         onValueChange = {
@@ -333,10 +329,7 @@ fun SettingsScreen(
                         enabled = currentSettings.bypassFocusIsland,
                         magnetThreshold = 0.013f,
                         hapticEffect = SliderDefaults.SliderHapticEffect.Step,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = 12.dp)
+                        modifier = Modifier.fillMaxWidth()
                     )
                     Text(
                         text = stringResource(R.string.xmsf_block_duration_summary),
