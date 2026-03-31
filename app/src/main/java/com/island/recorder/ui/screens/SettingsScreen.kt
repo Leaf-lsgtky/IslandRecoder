@@ -32,11 +32,13 @@ import com.island.recorder.shizuku.ShizukuHelper
 import rikka.shizuku.Shizuku
 import androidx.compose.ui.text.font.FontWeight
 import top.yukonga.miuix.kmp.basic.*
+import top.yukonga.miuix.kmp.basic.SliderDefaults
 import top.yukonga.miuix.kmp.theme.MiuixTheme
 import top.yukonga.miuix.kmp.extra.SuperArrow
 import top.yukonga.miuix.kmp.extra.SuperDropdown
 import top.yukonga.miuix.kmp.extra.SuperSpinner
 import top.yukonga.miuix.kmp.extra.SuperSwitch
+import top.yukonga.miuix.kmp.extra.BasicComponentColors
 import top.yukonga.miuix.kmp.icon.MiuixIcons
 import top.yukonga.miuix.kmp.icon.extended.Back
 import top.yukonga.miuix.kmp.utils.overScrollVertical
@@ -313,44 +315,48 @@ fun SettingsScreen(
                         .padding(bottom = 6.dp),
                     insideMargin = PaddingValues(0.dp)
                 ) {
-                    Column {
-                        Text(
-                            text = stringResource(R.string.xmsf_block_duration),
-                            style = MiuixTheme.textStyles.subtitle,
-                            color = if (currentSettings.bypassFocusIsland)
-                                MiuixTheme.colorScheme.onSurface
-                            else
-                                MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                    SuperArrow(
+                        title = stringResource(R.string.xmsf_block_duration),
+                        summary = "${currentSettings.xmsfBlockDurationMs}ms",
+                        enabled = currentSettings.bypassFocusIsland,
+                        titleColor = BasicComponentColors(
+                            color = MiuixTheme.colorScheme.onSurface,
+                            disabledColor = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        ),
+                        summaryColor = BasicComponentColors(
+                            color = MiuixTheme.colorScheme.primary,
+                            disabledColor = MiuixTheme.colorScheme.onSurface.copy(alpha = 0.5f)
                         )
-                        Slider(
-                            value = currentSettings.xmsfBlockDurationMs.toFloat(),
-                            onValueChange = {
-                                if (currentSettings.bypassFocusIsland) {
-                                    currentSettings = currentSettings.copy(xmsfBlockDurationMs = it.toLong())
-                                    onSettingsChanged(currentSettings)
-                                }
-                            },
-                            valueRange = 50f..200f,
-                            steps = 150,
-                            keyPoints = listOf(75f, 100f, 150f),
-                            showKeyPoints = currentSettings.bypassFocusIsland,
-                            enabled = currentSettings.bypassFocusIsland,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = 12.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.xmsf_block_duration_summary),
-                            style = MiuixTheme.textStyles.body2,
-                            color = if (currentSettings.bypassFocusIsland)
-                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                            else
-                                MiuixTheme.colorScheme.onBackground.copy(alpha = 0.3f),
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
-                        )
-                    }
+                    )
+                    Slider(
+                        value = currentSettings.xmsfBlockDurationMs.toFloat(),
+                        onValueChange = {
+                            if (currentSettings.bypassFocusIsland) {
+                                currentSettings = currentSettings.copy(xmsfBlockDurationMs = it.toLong())
+                                onSettingsChanged(currentSettings)
+                            }
+                        },
+                        valueRange = 50f..200f,
+                        steps = 150,
+                        keyPoints = listOf(75f, 100f, 150f),
+                        showKeyPoints = currentSettings.bypassFocusIsland,
+                        enabled = currentSettings.bypassFocusIsland,
+                        magnetThreshold = 0.05f,
+                        hapticEffect = SliderDefaults.SliderHapticEffect.Step,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 12.dp)
+                    )
+                    Text(
+                        text = stringResource(R.string.xmsf_block_duration_summary),
+                        style = MiuixTheme.textStyles.body2,
+                        color = if (currentSettings.bypassFocusIsland)
+                            MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                        else
+                            MiuixTheme.colorScheme.onBackground.copy(alpha = 0.3f),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
                 }
 
                 // Tile Style
