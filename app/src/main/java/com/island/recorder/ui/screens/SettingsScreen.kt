@@ -312,34 +312,37 @@ fun SettingsScreen(
                     title = stringResource(R.string.xmsf_block_duration),
                     summary = "${currentSettings.xmsfBlockDurationMs}ms",
                     enabled = currentSettings.bypassFocusIsland,
-                    insideMargin = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Slider(
-                        value = currentSettings.xmsfBlockDurationMs.toFloat(),
-                        onValueChange = {
-                            if (currentSettings.bypassFocusIsland) {
-                                currentSettings = currentSettings.copy(xmsfBlockDurationMs = it.toLong())
-                                onSettingsChanged(currentSettings)
-                            }
-                        },
-                        valueRange = 50f..200f,
-                        steps = 0,
-                        keyPoints = listOf(75f, 100f, 150f),
-                        showKeyPoints = currentSettings.bypassFocusIsland,
-                        enabled = currentSettings.bypassFocusIsland,
-                        magnetThreshold = 0.013f,
-                        hapticEffect = SliderDefaults.SliderHapticEffect.Step,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Text(
-                        text = stringResource(R.string.xmsf_block_duration_summary),
-                        style = MiuixTheme.textStyles.body2,
-                        color = if (currentSettings.bypassFocusIsland)
-                            MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                        else
-                            MiuixTheme.colorScheme.onBackground.copy(alpha = 0.3f)
-                    )
-                }
+                    insideMargin = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    bottomAction = {
+                        Column {
+                            Slider(
+                                value = currentSettings.xmsfBlockDurationMs.toFloat(),
+                                onValueChange = {
+                                    if (currentSettings.bypassFocusIsland) {
+                                        currentSettings = currentSettings.copy(xmsfBlockDurationMs = it.toLong())
+                                        onSettingsChanged(currentSettings)
+                                    }
+                                },
+                                valueRange = 50f..200f,
+                                steps = 0,
+                                keyPoints = listOf(75f, 100f, 150f),
+                                showKeyPoints = currentSettings.bypassFocusIsland,
+                                enabled = currentSettings.bypassFocusIsland,
+                                magnetThreshold = 0.013f,
+                                hapticEffect = SliderDefaults.SliderHapticEffect.Step,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Text(
+                                text = stringResource(R.string.xmsf_block_duration_summary),
+                                style = MiuixTheme.textStyles.body2,
+                                color = if (currentSettings.bypassFocusIsland)
+                                    MiuixTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                                else
+                                    MiuixTheme.colorScheme.onBackground.copy(alpha = 0.3f)
+                            )
+                        }
+                    }
+                )
 
                 // Tile Style
                 val tileStyleItems = TileStyle.entries.map { style ->
